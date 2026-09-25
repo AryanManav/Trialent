@@ -46,7 +46,7 @@ const COMPARISON = {
   ],
   trialent: [
     "Real requirements from the startup",
-    "Paid, scoped work — 5 to 10 hours",
+    "Scoped work, with the terms stated upfront",
     "Observable execution: commits, questions, delivery",
     "Structured evaluation against stated criteria",
   ],
@@ -346,7 +346,7 @@ export default async function LandingPage({
               </li>
               <li className="flex gap-2.5">
                 <BadgeCheck className="h-4 w-4 shrink-0 text-emerald-700" aria-hidden />
-                Every decision comes with a written message to the candidate.
+                Candidates see every decision, with any note the company adds.
               </li>
             </ul>
           </div>
@@ -436,9 +436,9 @@ export default async function LandingPage({
         <div className="order-1 lg:order-2">
           <SectionHeading
             align="left"
-            chip="Paid work"
-            title="Real projects are paid projects."
-            subtitle="Every project states its fee and scope before anyone applies — no unpaid take-home tests, no open-ended assignments."
+            chip="Clear terms"
+            title="The terms are on the brief before you apply."
+            subtitle="Build projects state their fee and scope upfront, and the company pays the candidate directly. Hiring roles may ask for a short unpaid assessment — at most 8 hours, and labelled on every listing."
           />
         </div>
       </section>

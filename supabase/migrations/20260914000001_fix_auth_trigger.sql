@@ -1,5 +1,5 @@
 -- ============================================================================
--- PROVENTO FIX AUTH TRIGGER & PERMISSIONS
+-- TRIALENT FIX AUTH TRIGGER & PERMISSIONS
 -- Run this in Supabase SQL Editor to fix "Database error saving new user"
 -- ============================================================================
 

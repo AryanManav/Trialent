@@ -12,8 +12,8 @@ export default function ForCompaniesPage() {
         </h1>
         <p className="text-slate-600 max-w-2xl mx-auto">
           Hiring early-career engineers is one of the highest-variance decisions a startup
-          makes. Standardize your evaluation with a realistic 5–10 hour paid trial
-          project.
+          makes. Standardize your evaluation with a short, scoped paid trial project — or
+          an assessment of at most 8 hours for a role you&apos;re hiring for.
         </p>
         <div>
           <SignedOutCta>

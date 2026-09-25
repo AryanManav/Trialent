@@ -5,7 +5,7 @@ export default function HowItWorksPage() {
     {
       num: "01",
       title: "Company Creates a Standardized Project",
-      desc: "Startups define a real, job-relevant micro-project (5–10 hours of effort) with clear acceptance criteria, required skills, and paid compensation (e.g. ₹5,000).",
+      desc: "Startups define a real, job-relevant micro-project with clear acceptance criteria, required skills, and the fee stated upfront (e.g. ₹5,000).",
     },
     {
       num: "02",
@@ -14,8 +14,8 @@ export default function HowItWorksPage() {
     },
     {
       num: "03",
-      title: "Candidate Selection & Milestone Funding",
-      desc: "The company reviews applicants, shortlists the best fit, and funds the project milestone before work begins.",
+      title: "Candidate Selection",
+      desc: "The company reviews applicants and selects the best fit. Once the work is accepted, the company pays the candidate directly — Trialent never holds the money.",
     },
     {
       num: "04",

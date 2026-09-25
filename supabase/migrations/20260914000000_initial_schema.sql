@@ -1,5 +1,5 @@
 -- ============================================================================
--- PROVENTO INITIAL SCHEMA MIGRATION (IDEMPOTENT)
+-- TRIALENT INITIAL SCHEMA MIGRATION (IDEMPOTENT)
 -- Project-Based Talent Discovery & Evaluation Platform for Startups
 -- ============================================================================
 

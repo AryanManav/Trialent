@@ -159,8 +159,12 @@ export const ASSESSMENT_TYPES = {
   other: "Other professional assessment",
 } as const satisfies Record<AssessmentType, string>;
 
-/** Longest estimate a hiring assessment may carry — it's unpaid, so keep it short. */
-export const MAX_ASSESSMENT_HOURS = 40;
+/**
+ * Longest estimate a hiring assessment may carry. It's unpaid, and the public copy
+ * promises "at most 8 hours" — change both together. The database enforces the same
+ * cap on new postings (20261008000000_before_outreach_hardening.sql).
+ */
+export const MAX_ASSESSMENT_HOURS = 8;
 
 /** Most people one hire-only posting can hire, and its application ceiling. */
 export const MAX_HIRE_OPENINGS = 100;

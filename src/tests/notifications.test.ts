@@ -73,6 +73,10 @@ describe("notification formatting", () => {
     expect(isInternalPath("/company/projects")).toBe(true);
     expect(isInternalPath("//evil.example")).toBe(false);
     expect(isInternalPath("https://evil.example")).toBe(false);
+    expect(isInternalPath("/\\evil.example")).toBe(false);
+    expect(isInternalPath("/\t/evil.example")).toBe(false);
+    expect(isInternalPath("/\n/evil.example")).toBe(false);
+    expect(isInternalPath("/company/projects?tab=open#top")).toBe(true);
     expect(isInternalPath(null)).toBe(false);
   });
 

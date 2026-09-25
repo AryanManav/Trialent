@@ -27,11 +27,12 @@ export default function ForCandidatesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Paid work, priced upfront</CardTitle>
+            <CardTitle className="text-lg">Terms stated upfront</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-slate-600">
-            No unpaid &quot;take-home tests&quot;. Every project states its fee (e.g.
-            ₹5,000) on the brief, before you apply.
+            Build projects state their fee (e.g. ₹5,000) on the brief, before you apply.
+            Hiring roles may include an unpaid assessment — at most 8 hours, and always
+            labelled.
           </CardContent>
         </Card>
 
@@ -40,8 +41,8 @@ export default function ForCandidatesPage() {
             <CardTitle className="text-lg">Verified Work History</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-slate-600">
-            Every completed project becomes part of your verified professional portfolio.
-            Real startup evaluation carries 10x more weight than a generic certificate.
+            Every accepted project becomes part of your verified work history, showing who
+            evaluated it and against which criteria.
           </CardContent>
         </Card>
       </div>

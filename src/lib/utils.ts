@@ -35,9 +35,13 @@ export function formatBytes(bytes: number): string {
   return `${Math.round((bytes / (1024 * 1024)) * 10) / 10} MB`;
 }
 
-/** True for a same-origin path such as "/company/projects" — not "//evil.com". */
+/**
+ * True for a same-origin path such as "/company/projects". Rejects "//evil.com",
+ * and also "/\evil.com" and "/<tab>/evil.com": browsers treat a backslash as a
+ * slash and strip tabs and newlines, so both would leave the origin.
+ */
 export function isInternalPath(value: string | null | undefined): value is string {
-  return typeof value === "string" && value.startsWith("/") && !value.startsWith("//");
+  return typeof value === "string" && /^\/(?![/\\])[^\\\s]*$/.test(value);
 }
 
 /** "just now", "5 min ago", "3 h ago", "2 days ago", then a date. */

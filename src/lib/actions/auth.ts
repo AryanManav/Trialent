@@ -7,11 +7,11 @@ import { loginSchema, signupSchema } from "@/lib/validations";
 import { dashboardFor, resolveUserRole } from "@/lib/constants";
 import type { UserRole } from "@/lib/types/database.types";
 import type { AuthState } from "@/lib/types/actions";
+import { isInternalPath } from "@/lib/utils";
 
 /** Only same-origin paths are safe to bounce back to after login. */
 function safeRedirectTarget(value: string | null): string | null {
-  if (!value) return null;
-  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  if (!isInternalPath(value)) return null;
   if (value.startsWith("/login") || value.startsWith("/signup")) return null;
   return value;
 }

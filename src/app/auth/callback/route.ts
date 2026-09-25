@@ -9,11 +9,11 @@ import {
   resolveUserRole,
 } from "@/lib/constants";
 import type { UserRole } from "@/lib/types/database.types";
+import { isInternalPath } from "@/lib/utils";
 
 /** Only same-origin paths may be used as the post-callback destination. */
 function safeNext(value: string | null): string | null {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return null;
-  return value;
+  return isInternalPath(value) ? value : null;
 }
 
 function withParam(path: string, key: string, value: string): string {
