@@ -115,6 +115,7 @@ export default async function ManageProjectPage({
           projectId={project.id}
           status={project.status}
           applicationCount={applicants.length}
+          applicationDeadline={project.applicationDeadline}
           kind="hire"
         />
         {project.assessment ? (
@@ -301,6 +302,8 @@ export default async function ManageProjectPage({
         projectId={project.id}
         status={project.status}
         applicationCount={applicants.length}
+        applicationDeadline={project.applicationDeadline}
+        kind={project.opportunityType}
       />
 
       {updated && (

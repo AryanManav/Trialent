@@ -217,7 +217,7 @@ export async function CompanyProjectsScreen({
     <div className="space-y-6">
       <div className="space-y-4">
         <PageHeader
-          title="Projects"
+          title="Opportunities"
           description="Your hiring roles, build projects and freelance contracts — who's applying, who's being hired, who's delivering."
           actions={
             <Link href="/company/projects/create">

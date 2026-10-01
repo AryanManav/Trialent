@@ -287,6 +287,18 @@ describe("a hire-only posting's lifecycle", () => {
     );
   });
 
+  it("stalls after the deadline once nobody is left in the running", () => {
+    const past = { applicationDeadline: "2026-09-01T00:00:00Z" };
+    expect(state({ ...past, inRunning: 0 })).toBe("stalled");
+    expect(state({ ...past, inRunning: 2 })).toBe("hiring");
+    // Unknown (not counted) behaves as before.
+    expect(state(past)).toBe("hiring");
+    // Before the deadline, an empty pipeline is just an open role.
+    expect(state({ inRunning: 0 })).toBe("open");
+    // Every opening filled is complete, not stalled.
+    expect(state({ ...past, inRunning: 0, hired: 5 })).toBe("completed");
+  });
+
   it("is private while hidden", () => {
     expect(state({ status: "draft" })).toBe("private");
   });
@@ -295,6 +307,7 @@ describe("a hire-only posting's lifecycle", () => {
     expect(isActiveHiring("applications_full")).toBe(true);
     expect(isActiveHiring("completed")).toBe(false);
     expect(isActiveHiring("closed")).toBe(false);
+    expect(isActiveHiring("stalled")).toBe(false);
   });
 });
 

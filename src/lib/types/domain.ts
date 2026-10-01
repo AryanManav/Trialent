@@ -191,6 +191,8 @@ export interface CompanyProjectView extends ProjectSummaryView {
   activeApplications: number;
   /** Hire only: candidates selected for the role. */
   hired: number;
+  /** Applications still in the running: not rejected, withdrawn or selected. */
+  inRunning: number;
   createdAt: string;
   /** When it completed or was closed; null while live. */
   closedAt: string | null;

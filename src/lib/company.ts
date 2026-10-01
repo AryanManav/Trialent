@@ -288,6 +288,8 @@ export function inHireTab(tab: HireTab, stage: HireStage): boolean {
  * - applications_full: at the limit — visible, Apply disabled; a withdrawal reopens it
  * - partially_filled: some openings filled, still hiring
  * - hiring:           applications closed (deadline passed), candidates in review
+ * - stalled:          applications closed and nobody left in the running —
+ *                     nothing more can happen until the company closes it
  * - completed:        every opening filled — out of Browse, into history
  * - closed:           closed by the company before filling every opening
  */
@@ -297,6 +299,7 @@ export type HiringState =
   | "applications_full"
   | "partially_filled"
   | "hiring"
+  | "stalled"
   | "completed"
   | "closed";
 
@@ -309,6 +312,11 @@ export function hiringState(
     /** Applications that aren't withdrawn — the ones holding a slot. */
     activeApplications: number;
     hired: number;
+    /**
+     * Applications still in the running (not rejected, withdrawn or hired).
+     * When known and zero after the deadline, the posting has stalled.
+     */
+    inRunning?: number;
   },
   now: Date = new Date()
 ): HiringState {
@@ -319,7 +327,10 @@ export function hiringState(
   if (posting.status === "draft" || posting.status === "pending_review") return "private";
 
   const beforeDeadline = new Date(posting.applicationDeadline).getTime() > now.getTime();
-  if (!beforeDeadline) return posting.hired > 0 ? "partially_filled" : "hiring";
+  if (!beforeDeadline) {
+    if (posting.inRunning === 0) return "stalled";
+    return posting.hired > 0 ? "partially_filled" : "hiring";
+  }
   if (
     posting.maxApplicants !== null &&
     posting.activeApplications >= posting.maxApplicants
@@ -338,11 +349,13 @@ export const HIRING_STATE_DISPLAY: Record<
   applications_full: { label: "Applications full", tone: "warning" },
   partially_filled: { label: "Partially filled", tone: "active" },
   hiring: { label: "Hiring", tone: "active" },
+  stalled: { label: "Needs closing", tone: "attention" },
   completed: { label: "Hiring complete", tone: "success" },
   closed: { label: "Closed", tone: "neutral" },
 };
 
 /** Still on the company's desk: not completed, not closed. */
+/** Still being worked on. A stalled role isn't: it only needs closing. */
 export function isActiveHiring(state: HiringState): boolean {
-  return state !== "completed" && state !== "closed";
+  return state !== "completed" && state !== "closed" && state !== "stalled";
 }

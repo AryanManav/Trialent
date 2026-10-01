@@ -155,6 +155,7 @@ interface ApplicationTally {
   active: number;
   activeBuild: number;
   hired: number;
+  inRunning: number;
 }
 
 /** Per project: new, active and hired applications, counted from one read. */
@@ -176,12 +177,16 @@ async function tallyApplications(
       active: 0,
       activeBuild: 0,
       hired: 0,
+      inRunning: 0,
     };
     const status = row.status as ApplicationStatus;
     if (status === "submitted") tally.awaitingReview += 1;
     if (status !== "withdrawn") tally.active += 1;
     if (status !== "withdrawn" && status !== "rejected") tally.activeBuild += 1;
     if (status === "selected") tally.hired += 1;
+    if (status !== "withdrawn" && status !== "rejected" && status !== "selected") {
+      tally.inRunning += 1;
+    }
     tallies.set(row.project_id, tally);
   }
   return tallies;
@@ -232,6 +237,7 @@ export async function getCompanyProjects(
         ? (tallies.get(row.id)?.active ?? 0)
         : (tallies.get(row.id)?.activeBuild ?? 0),
     hired: row.opportunity_type === "hire" ? (tallies.get(row.id)?.hired ?? 0) : 0,
+    inRunning: tallies.get(row.id)?.inRunning ?? 0,
     createdAt: row.created_at,
     closedAt: row.closed_at ?? null,
   }));

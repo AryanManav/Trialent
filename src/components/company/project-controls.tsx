@@ -20,10 +20,13 @@ export function ProjectControls({
   projectId,
   status,
   applicationCount,
+  applicationDeadline,
   kind = "build",
 }: {
   projectId: string;
   status: ProjectStatus;
+  /** Past this, Browse no longer lists it and nobody can apply, whatever the status. */
+  applicationDeadline: string;
   /** Every application ever made, withdrawn included — they're on record. */
   applicationCount: number;
   /** A hire-only role is closed, not withdrawn, and has no work to protect. */
@@ -58,6 +61,7 @@ export function ProjectControls({
   }
 
   const isPrivate = status === "draft";
+  const deadlinePassed = new Date(applicationDeadline).getTime() <= Date.now();
   const canDelete = applicationCount === 0;
 
   return (
@@ -71,6 +75,16 @@ export function ProjectControls({
                 <span className="font-semibold text-ink-900">Private.</span>{" "}
                 <span className="text-ink-500">
                   Hidden from Browse; applications are paused.
+                </span>
+              </span>
+            </>
+          ) : deadlinePassed ? (
+            <>
+              <Lock className="h-4 w-4 text-ink-500" />
+              <span>
+                <span className="font-semibold text-ink-900">Applications closed.</span>{" "}
+                <span className="text-ink-500">
+                  The deadline has passed, so it&apos;s no longer listed in Browse.
                 </span>
               </span>
             </>

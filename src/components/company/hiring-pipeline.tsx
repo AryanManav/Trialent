@@ -30,6 +30,8 @@ const STATE_NOTE: Record<HiringState, string> = {
   partially_filled: "Partially filled — keep hiring until every opening is filled.",
   hiring:
     "Applications closed — the deadline has passed. Review and select from those received.",
+  stalled:
+    "Nobody is left in the running and the deadline has passed. Close hiring to move this role to your history.",
   completed:
     "Hiring complete — every opening is filled. It has left Browse and is in your history.",
   closed:
@@ -77,6 +79,10 @@ export function HiringPipeline({
     ...project,
     activeApplications: active,
     hired: hires.length,
+    inRunning: applicants.filter(
+      (a) =>
+        a.status !== "withdrawn" && a.status !== "rejected" && a.status !== "selected"
+    ).length,
   });
   const display = HIRING_STATE_DISPLAY[state];
   const filled = hires.length >= project.openings;

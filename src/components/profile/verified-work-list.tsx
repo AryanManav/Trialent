@@ -52,7 +52,7 @@ export function VerifiedWorkList({
           </span>
         </h2>
         <span className="hidden text-xs text-ink-500 sm:block">
-          Accepted by the startup that paid for it
+          Accepted by the startup that commissioned it
         </span>
       </header>
 

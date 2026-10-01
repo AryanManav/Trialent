@@ -73,7 +73,7 @@ export default async function CompanyCandidatesPage({
     <div className="space-y-6">
       <div className="space-y-4">
         <PageHeader
-          title="Candidates"
+          title="Applicants"
           description="Your hiring pipeline across every project — who applied, who's building, and whose work is waiting for you."
           actions={
             <Link href="/search?type=candidates">

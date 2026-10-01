@@ -4,6 +4,7 @@ import {
   ClipboardList,
   FileCheck2,
   Hammer,
+  Handshake,
   Inbox,
   Plus,
   Sparkles,
@@ -40,8 +41,8 @@ export const dynamic = "force-dynamic";
 const FIRST_STEPS = [
   {
     icon: ClipboardList,
-    title: "Post a role or a project",
-    body: "Hire for a role (free), or post a paid project for one candidate to build.",
+    title: "Post a role, a project or a contract",
+    body: "Hire for a role (free), post a paid project for one candidate to build, or bring in a freelancer.",
   },
   {
     icon: Inbox,
@@ -81,9 +82,16 @@ export default async function CompanyDashboardPage() {
     (project) =>
       project.opportunityType === "hire" && isActiveHiring(hiringState(project))
   );
+  // Past the deadline with nobody left to decide on: only closing remains.
+  const stalledHiring = projects.filter(
+    (project) => project.opportunityType === "hire" && hiringState(project) === "stalled"
+  );
   const activeBuild = projects.filter(
-    // Paid work: build projects and freelance contracts.
-    (project) => project.opportunityType !== "hire" && !isClosedProject(project.status)
+    (project) => project.opportunityType === "build" && !isClosedProject(project.status)
+  );
+  const activeFreelance = projects.filter(
+    (project) =>
+      project.opportunityType === "freelance" && !isClosedProject(project.status)
   );
   const openPositions = activeHiring.reduce(
     (total, posting) => total + Math.max(0, posting.openings - posting.hired),
@@ -102,6 +110,8 @@ export default async function CompanyDashboardPage() {
       `${toEvaluate.length} submission${toEvaluate.length === 1 ? "" : "s"} to evaluate`,
     toReview.length > 0 &&
       `${toReview.length} new application${toReview.length === 1 ? "" : "s"}`,
+    stalledHiring.length > 0 &&
+      `${stalledHiring.length} role${stalledHiring.length === 1 ? "" : "s"} to close`,
   ].filter(Boolean);
   const name = company?.name ?? user.fullName.trim().split(/\s+/)[0] ?? "";
 
@@ -122,9 +132,9 @@ export default async function CompanyDashboardPage() {
       href: "/company/candidates",
     },
     {
-      label: "Active build projects",
-      value: activeBuild.length,
-      href: "/company/projects?type=build",
+      label: "Active paid work",
+      value: activeBuild.length + activeFreelance.length,
+      href: "/company/projects",
     },
     {
       label: "Completed projects",
@@ -151,6 +161,12 @@ export default async function CompanyDashboardPage() {
             <Button variant="outline">
               <Hammer className="h-4 w-4" aria-hidden />
               Create build project
+            </Button>
+          </Link>
+          <Link href="/company/projects/create?type=freelance">
+            <Button variant="outline">
+              <Handshake className="h-4 w-4" aria-hidden />
+              Create freelance contract
             </Button>
           </Link>
           <Link href="/company/projects/create?type=hire">
@@ -223,7 +239,32 @@ export default async function CompanyDashboardPage() {
                 </Link>
               )}
             </div>
-            {attention.length === 0 ? (
+            {stalledHiring.length > 0 && (
+              <ul className="divide-y divide-line overflow-hidden rounded-xl border border-accent-200 bg-surface">
+                {stalledHiring.map((posting) => (
+                  <li key={posting.id}>
+                    <Link
+                      href={`/company/projects/${posting.id}`}
+                      className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 transition-colors hover:bg-ink-50"
+                    >
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-medium text-ink-900">
+                          {posting.title}
+                        </span>
+                        <span className="block text-xs text-ink-500">
+                          Deadline passed · nobody left in the running · {posting.hired}{" "}
+                          of {posting.openings} filled
+                        </span>
+                      </span>
+                      <span className="text-sm font-medium text-accent-700">
+                        Close hiring →
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {attention.length === 0 && stalledHiring.length === 0 ? (
               <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-ink-200 bg-surface px-4 py-5">
                 <p className="text-sm text-ink-600">
                   You&apos;re all caught up. New applications and submitted work will show
@@ -236,7 +277,7 @@ export default async function CompanyDashboardPage() {
                 </Link>
               </div>
             ) : (
-              <PipelineList entries={attention.slice(0, 6)} />
+              attention.length > 0 && <PipelineList entries={attention.slice(0, 6)} />
             )}
           </section>
 
@@ -259,6 +300,18 @@ export default async function CompanyDashboardPage() {
             />
             <ActiveBuildList projects={activeBuild} pipeline={pipeline} />
           </section>
+
+          {activeFreelance.length > 0 && (
+            <section aria-labelledby="freelance" className="space-y-2">
+              <SectionHeading
+                id="freelance"
+                title="Active freelance contracts"
+                count={activeFreelance.length}
+                href="/company/projects?type=freelance"
+              />
+              <ActiveBuildList projects={activeFreelance} pipeline={pipeline} />
+            </section>
+          )}
 
           <div className="grid items-start gap-6 lg:grid-cols-3">
             <section aria-labelledby="history" className="space-y-2 lg:col-span-2">

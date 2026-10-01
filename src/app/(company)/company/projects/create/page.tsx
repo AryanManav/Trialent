@@ -97,7 +97,7 @@ export default async function CreateOpportunityPage({
               className="inline-flex items-center gap-1 hover:text-ink-900"
             >
               <ChevronLeft className="h-3.5 w-3.5" aria-hidden />
-              Projects
+              Opportunities
             </Link>
           }
           title="What are you looking to do?"
@@ -137,17 +137,17 @@ export default async function CreateOpportunityPage({
                     </li>
                   ))}
                 </ul>
-                <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-line pt-4">
                   <span
                     className={
                       free
-                        ? "text-sm font-semibold text-emerald-700"
-                        : "text-sm font-medium text-ink-700"
+                        ? "whitespace-nowrap text-sm font-semibold text-emerald-700"
+                        : "whitespace-nowrap text-sm font-medium text-ink-700"
                     }
                   >
                     {PRICE_LINE[value]}
                   </span>
-                  <span className="inline-flex items-center gap-1 text-sm font-medium text-brand-700">
+                  <span className="inline-flex items-center gap-1 whitespace-nowrap text-sm font-medium text-brand-700">
                     {cta}
                     <ArrowRight
                       className="h-4 w-4 transition-transform group-hover:translate-x-0.5"

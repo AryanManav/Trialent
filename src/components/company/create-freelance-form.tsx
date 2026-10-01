@@ -21,10 +21,22 @@ import {
 import { cn, formatCurrency } from "@/lib/utils";
 import type { PricingModel } from "@/lib/types/database.types";
 
+/** Held in state, so switching to hourly and back keeps what was typed. */
 interface MilestoneRow {
   key: number;
+  title: string;
   amount: string;
+  due: string;
+  description: string;
 }
+
+const emptyRow = (key: number): MilestoneRow => ({
+  key,
+  title: "",
+  amount: "",
+  due: "",
+  description: "",
+});
 
 /**
  * A freelance contract: one freelancer, paid by the company directly, either
@@ -36,7 +48,7 @@ interface MilestoneRow {
 export function CreateFreelanceForm() {
   const [state, formAction, pending] = useActionState(createFreelanceAction, null);
   const [pricing, setPricing] = useState<PricingModel>("fixed");
-  const [rows, setRows] = useState<MilestoneRow[]>([{ key: 1, amount: "" }]);
+  const [rows, setRows] = useState<MilestoneRow[]>([emptyRow(1)]);
   const [rate, setRate] = useState("");
   const [hoursPerWeek, setHoursPerWeek] = useState("");
   const [weeks, setWeeks] = useState("");
@@ -54,15 +66,15 @@ export function CreateFreelanceForm() {
 
   const addRow = () => {
     if (rows.length >= FREELANCE_LIMITS.maxMilestones) return;
-    setRows((current) => [...current, { key: nextKey.current++, amount: "" }]);
+    setRows((current) => [...current, emptyRow(nextKey.current++)]);
   };
   const removeRow = (key: number) =>
     setRows((current) =>
       current.length > 1 ? current.filter((row) => row.key !== key) : current
     );
-  const setAmount = (key: number, amount: string) =>
+  const setField = (key: number, field: keyof Omit<MilestoneRow, "key">, value: string) =>
     setRows((current) =>
-      current.map((row) => (row.key === key ? { ...row, amount } : row))
+      current.map((row) => (row.key === key ? { ...row, [field]: value } : row))
     );
 
   return (
@@ -257,6 +269,10 @@ export function CreateFreelanceForm() {
                         id={`milestoneTitle-${row.key}`}
                         name="milestoneTitle"
                         required
+                        value={row.title}
+                        onChange={(event) =>
+                          setField(row.key, "title", event.target.value)
+                        }
                         maxLength={150}
                         placeholder="e.g. Login and dashboard screens"
                         className={inputClass}
@@ -275,7 +291,9 @@ export function CreateFreelanceForm() {
                           min={FREELANCE_LIMITS.minMilestoneAmount}
                           required
                           value={row.amount}
-                          onChange={(event) => setAmount(row.key, event.target.value)}
+                          onChange={(event) =>
+                            setField(row.key, "amount", event.target.value)
+                          }
                           className={inputClass}
                         />
                       </Field>
@@ -285,6 +303,10 @@ export function CreateFreelanceForm() {
                           name="milestoneDue"
                           type="datetime-local"
                           required
+                          value={row.due}
+                          onChange={(event) =>
+                            setField(row.key, "due", event.target.value)
+                          }
                           className={inputClass}
                         />
                       </Field>
@@ -298,6 +320,10 @@ export function CreateFreelanceForm() {
                         id={`milestoneDescription-${row.key}`}
                         name="milestoneDescription"
                         rows={2}
+                        value={row.description}
+                        onChange={(event) =>
+                          setField(row.key, "description", event.target.value)
+                        }
                         maxLength={2000}
                         className={textareaClass}
                       />
