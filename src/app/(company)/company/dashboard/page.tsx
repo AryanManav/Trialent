@@ -82,7 +82,8 @@ export default async function CompanyDashboardPage() {
       project.opportunityType === "hire" && isActiveHiring(hiringState(project))
   );
   const activeBuild = projects.filter(
-    (project) => project.opportunityType === "build" && !isClosedProject(project.status)
+    // Paid work: build projects and freelance contracts.
+    (project) => project.opportunityType !== "hire" && !isClosedProject(project.status)
   );
   const openPositions = activeHiring.reduce(
     (total, posting) => total + Math.max(0, posting.openings - posting.hired),
@@ -93,7 +94,7 @@ export default async function CompanyDashboardPage() {
     0
   );
   const completedProjects = history.filter(
-    (entry) => entry.status === "completed" && entry.opportunityType === "build"
+    (entry) => entry.status === "completed" && entry.opportunityType !== "hire"
   ).length;
 
   const summary = [

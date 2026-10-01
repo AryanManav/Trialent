@@ -48,8 +48,19 @@ describe("Validation Schemas", () => {
         email: "aarav@example.com",
         password: "Password123",
         role: "candidate",
+        acceptTerms: "on",
       });
       expect(result.success).toBe(true);
+    });
+
+    it("refuses signup without accepting the Terms", () => {
+      const result = signupSchema.safeParse({
+        fullName: "Aarav Patel",
+        email: "aarav@example.com",
+        password: "Password123",
+        role: "candidate",
+      });
+      expect(result.success).toBe(false);
     });
 
     it("accepts company signup", () => {
@@ -58,6 +69,7 @@ describe("Validation Schemas", () => {
         email: "priya@techstartup.in",
         password: "Password123",
         role: "company",
+        acceptTerms: "on",
       });
       expect(result.success).toBe(true);
     });

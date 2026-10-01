@@ -234,6 +234,19 @@ export default async function ProjectsDirectoryPage({
                 count: projects.filter((project) => project.opportunityType === "build")
                   .length,
               },
+              {
+                id: "freelance",
+                label: "Freelance",
+                href: hrefWith(params, {
+                  kind: "freelance",
+                  job: null,
+                  where: null,
+                  hours: null,
+                }),
+                count: projects.filter(
+                  (project) => project.opportunityType === "freelance"
+                ).length,
+              },
             ]}
           />
 

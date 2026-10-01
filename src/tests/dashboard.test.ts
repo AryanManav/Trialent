@@ -18,6 +18,7 @@ const trial = (overrides: Partial<TrialView>): TrialView => ({
   expectedHours: 8,
   projectDeadline: "2026-09-20T12:00:00Z",
   selectedAt: "2026-09-10T00:00:00Z",
+  opportunityType: "build",
   ...overrides,
 });
 

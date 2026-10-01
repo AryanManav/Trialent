@@ -49,9 +49,12 @@ export function OAuthButtons({
   status,
   role,
   next,
+  disabled = false,
   onError,
 }: {
   status: OAuthProviderStatus;
+  /** Sign-up keeps these off until the Terms box is ticked. */
+  disabled?: boolean;
   /** Present on sign-up: the role the new account should get. */
   role?: "candidate" | "company";
   /** Present on sign-in: where to go afterwards. */
@@ -93,7 +96,7 @@ export function OAuthButtons({
             <button
               key={provider.id}
               type="button"
-              disabled={!enabled || pending !== null}
+              disabled={!enabled || disabled || pending !== null}
               onClick={() => start(provider.id)}
               aria-label={`Continue with ${provider.label}`}
               title={
@@ -103,7 +106,7 @@ export function OAuthButtons({
               }
               className={cn(
                 "flex h-12 items-center justify-center gap-fib3 rounded-full border border-line text-sm font-semibold text-ink-700 transition-colors",
-                enabled
+                enabled && !disabled
                   ? "hover:border-ink-300 hover:bg-ink-50"
                   : "cursor-not-allowed opacity-40"
               )}

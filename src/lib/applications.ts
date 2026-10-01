@@ -142,11 +142,18 @@ export function stageOf(application: ApplicationSummaryView): ApplicationStage {
  * brief — which exists while Browse can list the project, so once it's
  * finished or cancelled there is nothing to link to.
  */
+/** Where a selected candidate does the work: a trial workspace, or a contract. */
+export function workHref(projectId: string, type: OpportunityType): string {
+  return type === "freelance"
+    ? `/candidate/contracts/${projectId}`
+    : `/candidate/trials/${projectId}`;
+}
+
 export function applicationHref(application: ApplicationSummaryView): string | null {
   const project = application.project;
   if (!project) return null;
-  if (application.status === "selected" && project.opportunityType === "build") {
-    return `/candidate/trials/${project.id}`;
+  if (application.status === "selected" && project.opportunityType !== "hire") {
+    return workHref(project.id, project.opportunityType);
   }
   // Hire only: the assessment workspace, which stays readable after a decision.
   if (project.opportunityType === "hire" && project.hasAssessment) {

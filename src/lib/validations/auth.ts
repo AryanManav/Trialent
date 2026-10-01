@@ -43,6 +43,11 @@ export const signupSchema = z.object({
   role: z.enum(["candidate", "company"], {
     errorMap: () => ({ message: "Please select either Candidate or Company" }),
   }),
+  acceptTerms: z.literal("on", {
+    errorMap: () => ({
+      message: "Please confirm you're 18 or older and agree to the Terms",
+    }),
+  }),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;

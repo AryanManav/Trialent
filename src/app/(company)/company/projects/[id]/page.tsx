@@ -138,7 +138,10 @@ export default async function ManageProjectPage({
     );
   }
 
-  const evaluationPath = (candidateId: string) => `${projectPath}/review/${candidateId}`;
+  const freelance = project.opportunityType === "freelance";
+  // A freelancer's work is reviewed milestone by milestone on the contract page.
+  const evaluationPath = (candidateId: string) =>
+    freelance ? `${projectPath}/contract` : `${projectPath}/review/${candidateId}`;
   const applicantPath = (applicationId: string) =>
     `${projectPath}/applicants/${applicationId}`;
   const unreadLinks = new Set(notifications.unread.map((marker) => marker.linkUrl));
@@ -228,7 +231,7 @@ export default async function ManageProjectPage({
           </Link>
           {selected ? (
             <span aria-hidden="true" className={buttonVariants()}>
-              Evaluate work
+              {freelance ? "Open contract" : "Evaluate work"}
               <CountBadge count={updates} />
               <ArrowRight className="h-4 w-4" />
             </span>
@@ -264,9 +267,11 @@ export default async function ManageProjectPage({
           </p>
           <div className="mt-fib3 flex flex-wrap gap-fib3 text-xs font-semibold">
             <span className="rounded-md bg-brand-50 px-fib4 py-fib2 text-brand-700">
-              {project.purpose === "hire"
-                ? `${selectedApplicants.length} of ${project.openings} candidate${project.openings === 1 ? "" : "s"} selected`
-                : `Build only · ${selectedApplicants.length ? "candidate selected" : "no candidate yet"}`}
+              {freelance
+                ? `Freelance · ${selectedApplicants.length ? "freelancer selected" : "no freelancer yet"}`
+                : project.purpose === "hire"
+                  ? `${selectedApplicants.length} of ${project.openings} candidate${project.openings === 1 ? "" : "s"} selected`
+                  : `Build only · ${selectedApplicants.length ? "candidate selected" : "no candidate yet"}`}
             </span>
             {project.maxApplicants !== null && (
               <span className="rounded-md bg-ink-100 px-fib4 py-fib2 text-ink-700">
@@ -285,7 +290,9 @@ export default async function ManageProjectPage({
           <span className="font-semibold text-brand-800">
             New from {withUpdates.candidateName} — submitted work or a question.
           </span>
-          <span className="shrink-0 font-semibold text-brand-700">Evaluate →</span>
+          <span className="shrink-0 font-semibold text-brand-700">
+            {freelance ? "Open contract →" : "Evaluate →"}
+          </span>
         </Link>
       )}
 

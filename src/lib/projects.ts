@@ -112,7 +112,10 @@ export function parseProjectFilters(
   categories: readonly string[]
 ): ProjectFilters {
   const category = params.category;
-  const type = params.kind === "hire" || params.kind === "build" ? params.kind : null;
+  const type =
+    params.kind === "hire" || params.kind === "build" || params.kind === "freelance"
+      ? params.kind
+      : null;
   return {
     q: (params.q ?? "").trim().slice(0, 80),
     category:
@@ -167,10 +170,11 @@ export function filterProjects<
     const type = project.opportunityType ?? "build";
     if (filters.category && project.category !== filters.category) return false;
     if (filters.type && type !== filters.type) return false;
-    // Fee and effort describe paid projects; job type and arrangement describe roles.
+    // Pay describes paid work (a contract's total or estimate), effort describes
+    // build projects, and job type and arrangement describe roles.
     if (
       filters.minPay !== null &&
-      (type !== "build" || project.paymentAmount < filters.minPay)
+      (type === "hire" || project.paymentAmount < filters.minPay)
     ) {
       return false;
     }

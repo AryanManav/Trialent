@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState, useEffect } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowRight,
@@ -52,6 +53,7 @@ export function SignupForm({ providers }: { providers: OAuthProviderStatus }) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [oauthError, setOauthError] = useState<string | null>(null);
   const callbackFailed = searchParams.get("error") === "oauth_failed";
 
@@ -117,7 +119,34 @@ export function SignupForm({ providers }: { providers: OAuthProviderStatus }) {
           </div>
         </fieldset>
 
-        <OAuthButtons status={providers} role={role} onError={setOauthError} />
+        <label className="flex items-start gap-fib4 text-sm text-ink-700">
+          <input
+            type="checkbox"
+            name="acceptTerms"
+            required
+            checked={acceptedTerms}
+            onChange={(event) => setAcceptedTerms(event.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 rounded border-line-strong accent-brand-600"
+          />
+          <span>
+            I&apos;m 18 or older and I agree to the{" "}
+            <Link href="/terms" target="_blank" className="font-medium underline">
+              Terms of Use
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" target="_blank" className="font-medium underline">
+              Privacy Notice
+            </Link>
+            .
+          </span>
+        </label>
+
+        <OAuthButtons
+          status={providers}
+          role={role}
+          disabled={!acceptedTerms}
+          onError={setOauthError}
+        />
         <OrDivider />
 
         <div className="space-y-fib6">

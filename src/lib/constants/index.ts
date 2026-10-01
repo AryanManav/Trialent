@@ -3,7 +3,9 @@ import type {
   CompanyWorkStyle,
   ExperienceLevel,
   JobType,
+  MilestoneStatus,
   OpportunityType,
+  PricingModel,
   WorkArrangement,
   ProjectCategory,
   SelectionWorkStatus,
@@ -12,6 +14,7 @@ import type {
   ProjectStatus,
   UserRole,
 } from "@/lib/types/database.types";
+import type { StatusTone } from "@/lib/status";
 
 export const DASHBOARD_BY_ROLE: Record<UserRole, string> = {
   admin: "/admin",
@@ -106,10 +109,12 @@ export const REVIEWABLE_STATUS_LABELS: Record<
 };
 
 /**
- * The two kinds of opportunity. Build only is Trialent's paid project: one
+ * The three kinds of opportunity. Build only is Trialent's paid project: one
  * selected candidate builds it and is paid. Hire only is free to post:
  * candidates apply to a role, complete its unpaid hiring assessment, and up to
- * N are hired on the work they submit.
+ * N are hired on the work they submit. Freelance is a paid contract with one
+ * freelancer, delivered and approved milestone by milestone (or by logged
+ * hours), and paid by the company directly.
  */
 export const OPPORTUNITY_TYPES = {
   build: {
@@ -125,7 +130,46 @@ export const OPPORTUNITY_TYPES = {
       "Evaluate candidates through a project or assessment and hire the strongest for your openings.",
     price: "Free · several hires",
   },
+  freelance: {
+    label: "Freelance",
+    title: "Hire a freelancer",
+    summary:
+      "A paid contract with one freelancer: fixed-price milestones or an hourly rate, approved as the work is delivered.",
+    price: "Paid contract · one freelancer",
+  },
 } as const satisfies Record<OpportunityType, Record<string, string>>;
+
+export const PRICING_MODELS = {
+  fixed: {
+    label: "Fixed price",
+    hint: "Split the work into milestones, each with an amount and a due date.",
+  },
+  hourly: {
+    label: "Hourly",
+    hint: "Pay an hourly rate. The freelancer logs hours each week for you to approve.",
+  },
+} as const satisfies Record<PricingModel, { label: string; hint: string }>;
+
+/** Bounds the database also enforces (20261009000000_freelance_gigs.sql). */
+export const FREELANCE_LIMITS = {
+  minMilestones: 1,
+  maxMilestones: 10,
+  minMilestoneAmount: 500,
+  minHourlyRate: 100,
+  maxHourlyRate: 100_000,
+  maxHoursPerWeek: 60,
+  maxDurationWeeks: 52,
+  maxLoggedHours: 80,
+} as const;
+
+export const MILESTONE_STATUS_DISPLAY = {
+  planned: { label: "Not started", tone: "neutral" },
+  submitted: { label: "Waiting for review", tone: "warning" },
+  changes_requested: { label: "Changes requested", tone: "attention" },
+  approved: { label: "Approved · payment due", tone: "info" },
+  paid: { label: "Paid", tone: "success" },
+  cancelled: { label: "Cancelled", tone: "neutral" },
+} as const satisfies Record<MilestoneStatus, { label: string; tone: StatusTone }>;
 
 export const JOB_TYPES = {
   full_time: "Full-time",
@@ -302,6 +346,7 @@ const ROLE_NAVIGATION: Record<UserRole, RoleNavigation> = {
       { label: "Overview", href: "/company/dashboard", exact: true },
       { label: "Hiring", href: "/company/projects?type=hire" },
       { label: "Build projects", href: "/company/projects?type=build" },
+      { label: "Freelance", href: "/company/projects?type=freelance" },
       { label: "Applicants", href: "/company/candidates" },
       { label: "History", href: "/company/history" },
       { label: "Company profile", href: "/company/profile" },
@@ -476,6 +521,28 @@ export function companyProfilePath(companyId: string): string {
  */
 export const OAUTH_INTENT_COOKIE = "trialent_oauth_intent";
 export const OAUTH_INTENT_MAX_AGE_SECONDS = 600;
+
+/**
+ * Who runs Trialent and how to reach them, as published on /privacy, /terms and
+ * /grievance. Bump TERMS_VERSION whenever either document changes materially:
+ * accept_terms() records it per user, so a new version can be re-prompted.
+ */
+export const LEGAL = {
+  operator: "Aryan Manav",
+  operatorDescription: "an individual based in India",
+  contactEmail: "hello@trialent.in",
+  grievanceOfficer: "Aryan Manav",
+  courts: "New Delhi",
+  lastUpdated: "1 October 2026",
+} as const;
+
+export const TERMS_VERSION = "2026-10-01";
+
+export const LEGAL_LINKS = [
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+  { label: "Grievances", href: "/grievance" },
+] as const;
 
 /** Where each role manages its account. Admins are managed by hand. */
 export const SETTINGS_BY_ROLE: Record<UserRole, string | null> = {

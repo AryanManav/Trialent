@@ -12,7 +12,10 @@ import type {
   AssessmentType,
   ExperienceLevel,
   JobType,
+  MilestoneKind,
+  MilestoneStatus,
   OpportunityType,
+  PricingModel,
   ProjectMessageAuthorRole,
   WorkArrangement,
   ProjectOutcomeType,
@@ -93,6 +96,83 @@ export interface ProjectSummaryView {
   /** Hire only: the assessment candidates complete, for the listing. */
   assessmentTitle?: string | null;
   assessmentTechnologies?: string[];
+  /** Freelance only: how the contract is priced. */
+  freelance: FreelanceTerms | null;
+}
+
+/**
+ * A freelance contract's price. Fixed price: `paymentAmount` is the sum of
+ * the milestones. Hourly: a rate, and `paymentAmount` is the estimate
+ * (rate × hours a week × weeks).
+ */
+export interface FreelanceTerms {
+  pricingModel: PricingModel;
+  hourlyRate: number | null;
+  hoursPerWeek: number | null;
+  durationWeeks: number | null;
+}
+
+/** A milestone as listed in a fixed-price brief, visible to applicants. */
+export interface MilestonePlanItem {
+  position: number;
+  title: string;
+  description: string | null;
+  amount: number;
+  dueDate: string | null;
+}
+
+/** A milestone or hourly log inside a running contract. */
+export interface MilestoneView extends MilestonePlanItem {
+  id: string;
+  kind: MilestoneKind;
+  hours: number | null;
+  periodStart: string | null;
+  status: MilestoneStatus;
+  workUrl: string | null;
+  workNote: string | null;
+  reviewNote: string | null;
+  submittedAt: string | null;
+  reviewedAt: string | null;
+  paidAt: string | null;
+  paymentConfirmedAt: string | null;
+}
+
+/** Money on a contract, by how far it has got. All in the contract's currency. */
+export interface ContractTotals {
+  /** Fixed price: the milestones' total. Hourly: the estimate. */
+  agreed: number;
+  /** Delivered and waiting for the company's review. */
+  inReview: number;
+  /** Approved but not yet marked paid: what the company owes now. */
+  due: number;
+  paid: number;
+  /** Paid and confirmed received by the freelancer. */
+  confirmed: number;
+  hoursLogged: number;
+}
+
+/** One freelance contract, as both sides see it. */
+export interface ContractView {
+  projectId: string;
+  slug: string;
+  title: string;
+  description: string;
+  problemStatement: string;
+  context: string;
+  requirements: string[];
+  deliverables: string[];
+  companyId: string;
+  companyName: string;
+  projectStatus: ProjectStatus;
+  currency: string;
+  paymentAmount: number;
+  projectDeadline: string;
+  terms: FreelanceTerms;
+  freelancer: { candidateId: string; name: string } | null;
+  /** The selection's state: in_progress while running, completed or cancelled after. */
+  contractStatus: SelectionWorkStatus | null;
+  milestones: MilestoneView[];
+  totals: ContractTotals;
 }
 
 /** A project in Browse, with how many places are taken. */
@@ -408,6 +488,8 @@ export interface TrialView {
   expectedHours: number;
   projectDeadline: string;
   selectedAt: string;
+  /** Build project or freelance contract; freelance work lives on its contract page. */
+  opportunityType: OpportunityType;
 }
 
 export interface TrialDetailView extends TrialView {

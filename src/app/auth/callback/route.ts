@@ -5,6 +5,7 @@ import { recordActivity } from "@/lib/data/activity";
 import {
   CANDIDATE_ACTIVITY_TYPES,
   OAUTH_INTENT_COOKIE,
+  TERMS_VERSION,
   dashboardFor,
   resolveUserRole,
 } from "@/lib/constants";
@@ -97,6 +98,16 @@ export async function GET(request: NextRequest) {
       requested_role: "company",
     });
     if (roleError) console.error("claim_signup_role failed:", roleError.message);
+  }
+
+  // Sign-up ticked the Terms box and sign-in shows "By continuing you agree",
+  // so both record acceptance. The database keeps the first time a version
+  // was accepted, so repeat sign-ins change nothing.
+  if (intent === "signup" || intent === "login") {
+    const { error: termsError } = await supabase.rpc("accept_terms", {
+      accepted_version: TERMS_VERSION,
+    });
+    if (termsError) console.error("accept_terms failed:", termsError.message);
   }
 
   const username = githubUsernameOf(user);

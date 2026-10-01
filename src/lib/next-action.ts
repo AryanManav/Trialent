@@ -1,5 +1,5 @@
 import { ACTIVITY_TIME_ZONE } from "@/lib/activity";
-import { isClosedWork, stageOf } from "@/lib/applications";
+import { isClosedWork, stageOf, workHref } from "@/lib/applications";
 import type { StatusTone } from "@/lib/status";
 import type { ApplicationSummaryView, TrialView } from "@/lib/types/domain";
 
@@ -49,7 +49,7 @@ export function nextActionFor(
       title: "Revise and resubmit your work",
       trial: revision,
       detail: dueLabel(revision.projectDeadline, now),
-      href: `/candidate/trials/${revision.projectId}`,
+      href: workHref(revision.projectId, revision.opportunityType),
       cta: "See what to change",
       tone: "attention",
     };
@@ -60,11 +60,15 @@ export function nextActionFor(
     return {
       kind: "submit",
       eyebrow: "Next up",
-      title: "Complete your project submission",
+      title:
+        building.opportunityType === "freelance"
+          ? "Keep your contract moving"
+          : "Complete your project submission",
       trial: building,
       detail: dueLabel(building.projectDeadline, now),
-      href: `/candidate/trials/${building.projectId}`,
-      cta: "Continue project",
+      href: workHref(building.projectId, building.opportunityType),
+      cta:
+        building.opportunityType === "freelance" ? "Open contract" : "Continue project",
       tone: "active",
     };
   }
@@ -79,7 +83,7 @@ export function nextActionFor(
       title: "Your work is being evaluated",
       trial: awaiting,
       detail: "You'll be notified when they decide",
-      href: `/candidate/trials/${awaiting.projectId}`,
+      href: workHref(awaiting.projectId, awaiting.opportunityType),
       cta: "View submission",
       tone: "warning",
     };

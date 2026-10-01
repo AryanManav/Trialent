@@ -37,9 +37,9 @@ export function PipelineList({
         );
         const display = PIPELINE_DISPLAY[stage];
         const urgent = stage === "new" || stage === "to_evaluate";
-        // Hire postings have no work deadline — only build projects do.
+        // Hire postings have no work deadline — build projects and contracts do.
         const due =
-          detail === "deadline" && entry.opportunityType === "build"
+          detail === "deadline" && entry.opportunityType !== "hire"
             ? dueLabel(entry.projectDeadline)
             : null;
         return (

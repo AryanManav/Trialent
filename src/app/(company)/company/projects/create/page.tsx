@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, BriefcaseBusiness, Check, ChevronLeft, Hammer } from "lucide-react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Check,
+  ChevronLeft,
+  Hammer,
+  Handshake,
+} from "lucide-react";
 import { requireRole } from "@/lib/auth/guards";
 import { OPPORTUNITY_TYPES } from "@/lib/constants";
 import { PageHeader } from "@/components/common/page-header";
@@ -7,6 +14,7 @@ import { StatusBanner } from "@/components/common/status-banner";
 import { OpportunityBadge } from "@/components/projects/opportunity-badge";
 import { CreateBuildForm } from "@/components/company/create-build-form";
 import { CreateHireForm } from "@/components/company/create-hire-form";
+import { CreateFreelanceForm } from "@/components/company/create-freelance-form";
 import type { OpportunityType } from "@/lib/types/database.types";
 
 const CHOICES: {
@@ -35,11 +43,39 @@ const CHOICES: {
       "Evaluate the delivered work",
     ],
   },
+  {
+    type: "freelance",
+    icon: Handshake,
+    cta: "Create freelance contract",
+    points: [
+      "Fixed-price milestones or an hourly rate",
+      "One freelancer delivers the work",
+      "Approve each delivery, then pay directly",
+    ],
+  },
 ];
 
+const ICON_TINT: Record<OpportunityType, string> = {
+  hire: "border-sky-200 bg-sky-50 text-sky-700",
+  build: "border-brand-200 bg-brand-50 text-brand-700",
+  freelance: "border-emerald-200 bg-emerald-50 text-emerald-700",
+};
+
+const PRICE_LINE: Record<OpportunityType, string> = {
+  hire: "Free",
+  build: "Paid project",
+  freelance: "Paid contract",
+};
+
+const CREATE_TITLE: Record<OpportunityType, string> = {
+  hire: "Create a hiring opportunity",
+  build: "Create a build project",
+  freelance: "Create a freelance contract",
+};
+
 /**
- * Posting starts by choosing what you need — a hire or a build — before any
- * type-specific field appears.
+ * Posting starts by choosing what you need — a hire, a build or a freelance
+ * contract — before any type-specific field appears.
  */
 export default async function CreateOpportunityPage({
   searchParams,
@@ -49,7 +85,7 @@ export default async function CreateOpportunityPage({
   await requireRole(["company", "admin"]);
   const { type, error } = await searchParams;
   const chosen: OpportunityType | null =
-    type === "hire" || type === "build" ? type : null;
+    type === "hire" || type === "build" || type === "freelance" ? type : null;
 
   if (!chosen) {
     return (
@@ -65,12 +101,12 @@ export default async function CreateOpportunityPage({
             </Link>
           }
           title="What are you looking to do?"
-          description="Hire for an open role, or get a real project built by one selected candidate."
+          description="Hire for an open role, get a project built by one selected candidate, or bring in a freelancer on a paid contract."
         />
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {CHOICES.map(({ type: value, icon: Icon, cta, points }) => {
             const info = OPPORTUNITY_TYPES[value];
-            const hire = value === "hire";
+            const free = value === "hire";
             return (
               <Link
                 key={value}
@@ -79,11 +115,7 @@ export default async function CreateOpportunityPage({
               >
                 <div className="flex items-start justify-between gap-3">
                   <span
-                    className={
-                      hire
-                        ? "grid h-10 w-10 place-items-center rounded-lg border border-sky-200 bg-sky-50 text-sky-700"
-                        : "grid h-10 w-10 place-items-center rounded-lg border border-brand-200 bg-brand-50 text-brand-700"
-                    }
+                    className={`grid h-10 w-10 place-items-center rounded-lg border ${ICON_TINT[value]}`}
                   >
                     <Icon className="h-5 w-5" aria-hidden />
                   </span>
@@ -108,12 +140,12 @@ export default async function CreateOpportunityPage({
                 <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
                   <span
                     className={
-                      hire
+                      free
                         ? "text-sm font-semibold text-emerald-700"
                         : "text-sm font-medium text-ink-700"
                     }
                   >
-                    {hire ? "Free" : "Paid project"}
+                    {PRICE_LINE[value]}
                   </span>
                   <span className="inline-flex items-center gap-1 text-sm font-medium text-brand-700">
                     {cta}
@@ -144,14 +176,18 @@ export default async function CreateOpportunityPage({
             Change type
           </Link>
         }
-        title={
-          chosen === "hire" ? "Create a hiring opportunity" : "Create a build project"
-        }
+        title={CREATE_TITLE[chosen]}
         description={`${info.summary} ${info.price}.`}
         actions={<OpportunityBadge type={chosen} />}
       />
       {error && <StatusBanner tone="error">{error}</StatusBanner>}
-      {chosen === "hire" ? <CreateHireForm /> : <CreateBuildForm />}
+      {chosen === "hire" ? (
+        <CreateHireForm />
+      ) : chosen === "freelance" ? (
+        <CreateFreelanceForm />
+      ) : (
+        <CreateBuildForm />
+      )}
     </div>
   );
 }

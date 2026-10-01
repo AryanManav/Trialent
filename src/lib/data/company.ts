@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { toFreelanceTerms } from "@/lib/freelance";
 import { one } from "@/lib/data/utils";
 import {
   ASSESSMENT_COLUMNS,
@@ -193,7 +194,7 @@ export async function getCompanyProjects(
   const { data } = await supabase
     .from("projects")
     .select(
-      "id, slug, title, description, status, expected_hours, payment_amount, currency, application_deadline, max_applicants, purpose, openings, category, opportunity_type, job_type, work_arrangement, job_location, experience_level, compensation, created_at, closed_at"
+      "id, slug, title, description, status, expected_hours, payment_amount, currency, application_deadline, max_applicants, purpose, openings, category, opportunity_type, job_type, work_arrangement, job_location, experience_level, compensation, created_at, closed_at, pricing_model, hourly_rate, hours_per_week, duration_weeks"
     )
     .eq("company_id", companyId)
     .order("created_at", { ascending: false });
@@ -213,6 +214,7 @@ export async function getCompanyProjects(
     applicationDeadline: row.application_deadline,
     companyId,
     companyName: null,
+    freelance: toFreelanceTerms(row),
     maxApplicants: row.max_applicants ?? null,
     purpose: (row.purpose ?? "hire") as ProjectPurpose,
     openings: row.openings ?? 1,
@@ -630,7 +632,8 @@ export async function getCompanyHistory(
   const people = new Map<string, CompanyHistoryEntry["people"]>();
   if (withPeople && rows.length > 0) {
     const hireIds = rows.filter((row) => row.opportunity_type === "hire");
-    const buildIds = rows.filter((row) => row.opportunity_type === "build");
+    // Build projects and freelance contracts both end with one selected person.
+    const buildIds = rows.filter((row) => row.opportunity_type !== "hire");
     const [{ data: hires }, { data: builders }] = await Promise.all([
       hireIds.length > 0
         ? supabase

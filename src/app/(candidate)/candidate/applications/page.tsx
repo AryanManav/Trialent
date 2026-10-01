@@ -223,7 +223,9 @@ export default async function CandidateApplicationsPage({
   const { tab: tabParam, kind: kindParam } = await searchParams;
   const tab: TabId = tabParam && tabParam in TABS ? (tabParam as TabId) : "all";
   const kind: OpportunityType | null =
-    kindParam === "hire" || kindParam === "build" ? kindParam : null;
+    kindParam === "hire" || kindParam === "build" || kindParam === "freelance"
+      ? kindParam
+      : null;
 
   const user = await requireCandidate();
   const candidateId = await getCandidateProfileId(user.id);
@@ -275,6 +277,13 @@ export default async function CandidateApplicationsPage({
       label: "Build only",
       href: hrefFor({ kind: "build" }),
       count: applications.filter((a) => a.project?.opportunityType === "build").length,
+    },
+    {
+      id: "freelance",
+      label: "Freelance",
+      href: hrefFor({ kind: "freelance" }),
+      count: applications.filter((a) => a.project?.opportunityType === "freelance")
+        .length,
     },
   ];
 

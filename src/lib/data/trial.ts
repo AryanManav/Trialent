@@ -12,6 +12,7 @@ import type {
   TrialView,
 } from "@/lib/types/domain";
 import type {
+  OpportunityType,
   ProjectStatus,
   ProjectWorkMode,
   SelectionWorkStatus,
@@ -28,6 +29,7 @@ interface RawTrialProject {
   expected_hours: number;
   project_deadline: string;
   company_id: string;
+  opportunity_type: OpportunityType | null;
   companies: { name: string | null } | { name: string | null }[] | null;
 }
 
@@ -76,7 +78,7 @@ interface RawSubmission {
 const ATTACHMENT_URL_TTL_SECONDS = 60 * 15;
 
 const TRIAL_PROJECT_COLUMNS =
-  "id, slug, title, status, payment_amount, currency, expected_hours, project_deadline, company_id, companies(name)";
+  "id, slug, title, status, payment_amount, currency, expected_hours, project_deadline, company_id, opportunity_type, companies(name)";
 
 function toTrial(
   selectedAt: string,
@@ -96,6 +98,7 @@ function toTrial(
     expectedHours: project.expected_hours,
     projectDeadline: project.project_deadline,
     selectedAt,
+    opportunityType: project.opportunity_type ?? "build",
   };
 }
 

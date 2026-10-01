@@ -20,7 +20,7 @@ export default async function CompanyActiveProjectsPage({
     <CompanyProjectsScreen
       userId={user.id}
       tab="active"
-      type={type === "hire" || type === "build" ? type : null}
+      type={type === "hire" || type === "build" || type === "freelance" ? type : null}
       created={created}
       deleted={deleted}
       error={error}

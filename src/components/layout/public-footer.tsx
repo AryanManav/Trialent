@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth/guards";
-import { dashboardFor } from "@/lib/constants";
+import { LEGAL_LINKS, dashboardFor } from "@/lib/constants";
 import { Logo } from "@/components/layout/logo";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import type { UserRole } from "@/lib/types/database.types";
@@ -13,7 +13,7 @@ interface FooterLink {
 /**
  * Each column's links go somewhere real for whoever is reading: a candidate's
  * "My work" is their own, a visitor's is the sign-up. Pages that don't exist
- * yet (legal, about, careers) aren't linked until they do.
+ * yet (about, careers) aren't linked until they do.
  */
 function columnsFor(role: UserRole | null): { title: string; links: FooterLink[] }[] {
   const candidate = role === "candidate";
@@ -125,7 +125,20 @@ export async function PublicFooter() {
       </div>
       <div className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
-          <p className="text-xs text-ink-400">© {new Date().getFullYear()} Trialent</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-400">
+            <p>© {new Date().getFullYear()} Trialent</p>
+            <nav aria-label="Legal">
+              <ul className="flex flex-wrap gap-x-4">
+                {LEGAL_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="hover:text-ink-900">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
           <ThemeSwitcher size="sm" />
         </div>
       </div>

@@ -15,7 +15,7 @@ export default async function CompanyCompletedProjectsPage({
     <CompanyProjectsScreen
       userId={user.id}
       tab="completed"
-      type={type === "hire" || type === "build" ? type : null}
+      type={type === "hire" || type === "build" || type === "freelance" ? type : null}
     />
   );
 }

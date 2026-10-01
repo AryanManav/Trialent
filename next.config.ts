@@ -15,7 +15,8 @@ const supabaseOrigin = (() => {
  */
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // The dev server's hot reload evaluates strings; production never does.
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${supabaseOrigin} https://avatars.githubusercontent.com https://lh3.googleusercontent.com`,
   "font-src 'self'",

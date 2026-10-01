@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   CalendarClock,
   CheckCircle2,
@@ -23,7 +23,7 @@ import {
   getCandidateProfileId,
   getCandidateProjectEvaluation,
 } from "@/lib/data/candidate";
-import { WORK_STATUS_DISPLAY, isClosedWork } from "@/lib/applications";
+import { WORK_STATUS_DISPLAY, isClosedWork, workHref } from "@/lib/applications";
 import { getCandidateTrial } from "@/lib/data/trial";
 import { getProjectThread } from "@/lib/data/thread";
 import { dueLabel } from "@/lib/next-action";
@@ -186,6 +186,8 @@ export default async function CandidateTrialWorkspacePage({
     getCandidateProjectEvaluation(candidateId, id),
   ]);
   if (!trial) notFound();
+  // Freelance work is delivered milestone by milestone on its contract page.
+  if (trial.opportunityType === "freelance") redirect(workHref(id, "freelance"));
 
   const closed = isClosedWork(trial);
   const cancelled = trial.status === "cancelled" || trial.workStatus === "cancelled";

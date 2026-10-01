@@ -14,7 +14,7 @@ import {
   OUTCOME_LABEL,
   hiringState,
 } from "@/lib/company";
-import { JOB_TYPES, WORK_ARRANGEMENTS } from "@/lib/constants";
+import { JOB_TYPES, PRICING_MODELS, WORK_ARRANGEMENTS } from "@/lib/constants";
 import { OpportunityBadge } from "@/components/projects/opportunity-badge";
 import { FilterChips } from "@/components/ui/filter-chips";
 import type { OpportunityType } from "@/lib/types/database.types";
@@ -41,6 +41,7 @@ function ProjectRow({
   result?: CompanyProjectResult;
 }) {
   const hire = project.opportunityType === "hire";
+  const freelance = project.freelance !== null;
   const status = hire
     ? HIRING_STATE_DISPLAY[hiringState(project)]
     : COMPANY_PROJECT_STATUS[project.status];
@@ -50,9 +51,11 @@ function ProjectRow({
     <li className={cn(updateCount > 0 && "bg-accent-50/40")}>
       <Link
         href={
-          closed && !hire
-            ? `/company/projects/${project.id}/review`
-            : `/company/projects/${project.id}`
+          freelance
+            ? `/company/projects/${project.id}/contract`
+            : closed && !hire
+              ? `/company/projects/${project.id}/review`
+              : `/company/projects/${project.id}`
         }
         className="group flex flex-col gap-3 px-4 py-4 transition-colors hover:bg-ink-50 md:flex-row md:items-center"
       >
@@ -107,8 +110,10 @@ function ProjectRow({
             </p>
           ) : (
             <p className="text-xs text-ink-500">
-              {project.expectedHours}h · Apply by{" "}
-              {formatDate(project.applicationDeadline)}
+              {project.freelance
+                ? `${PRICING_MODELS[project.freelance.pricingModel].label} · `
+                : `${project.expectedHours}h · `}
+              Apply by {formatDate(project.applicationDeadline)}
               {project.awaitingReview > 0 && (
                 <span className="font-medium text-accent-700">
                   {" "}
@@ -140,7 +145,13 @@ function ProjectRow({
           )}
           <StatusBadge size="sm" tone={status.tone} label={status.label} />
           <span className="ml-auto inline-flex items-center gap-1 text-sm font-medium text-brand-700 md:ml-0">
-            {hire ? "Manage applicants" : closed ? "Evaluations" : "Manage"}
+            {hire
+              ? "Manage applicants"
+              : freelance
+                ? "Contract"
+                : closed
+                  ? "Evaluations"
+                  : "Manage"}
             <ArrowRight className="h-3.5 w-3.5" aria-hidden />
           </span>
         </div>
@@ -177,6 +188,8 @@ export async function CompanyProjectsScreen({
   const typeCounts = {
     hire: allProjects.filter((project) => project.opportunityType === "hire").length,
     build: allProjects.filter((project) => project.opportunityType === "build").length,
+    freelance: allProjects.filter((project) => project.opportunityType === "freelance")
+      .length,
   };
   const projects = type
     ? allProjects.filter((project) => project.opportunityType === type)
@@ -204,7 +217,7 @@ export async function CompanyProjectsScreen({
       <div className="space-y-4">
         <PageHeader
           title="Projects"
-          description="Your hiring roles and build projects — who's applying, who's being hired, who's building."
+          description="Your hiring roles, build projects and freelance contracts — who's applying, who's being hired, who's delivering."
           actions={
             <Link href="/company/projects/create">
               <Button>
@@ -251,6 +264,12 @@ export async function CompanyProjectsScreen({
             href: `${basePath}?type=build`,
             count: typeCounts.build,
           },
+          {
+            id: "freelance",
+            label: "Freelance",
+            href: `${basePath}?type=freelance`,
+            count: typeCounts.freelance,
+          },
         ]}
       />
 
@@ -260,7 +279,9 @@ export async function CompanyProjectsScreen({
         <StatusBanner tone="success">
           {created === "hire"
             ? "Role posted and open for applications. Posting a role is free."
-            : "Project published and open for applications."}
+            : created === "freelance"
+              ? "Contract published and open for applications."
+              : "Project published and open for applications."}
         </StatusBanner>
       )}
 
@@ -274,7 +295,9 @@ export async function CompanyProjectsScreen({
                 ? "No active hiring opportunities"
                 : type === "build"
                   ? "No active build projects"
-                  : "No live roles or projects"
+                  : type === "freelance"
+                    ? "No active freelance contracts"
+                    : "No live roles or projects"
           }
           description={
             tab !== "active"
@@ -283,7 +306,9 @@ export async function CompanyProjectsScreen({
                 ? "Create an opportunity to start receiving candidates."
                 : type === "build"
                   ? "Create a project and find a candidate to complete it."
-                  : "Hire for a role for free, or post a paid project for one candidate to build."
+                  : type === "freelance"
+                    ? "Post a paid contract and select a freelancer to deliver it."
+                    : "Hire for a role for free, post a paid project, or bring in a freelancer."
           }
           actionText={tab === "active" ? "Create opportunity" : undefined}
           actionHref={

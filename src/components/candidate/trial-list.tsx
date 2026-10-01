@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, CalendarClock } from "lucide-react";
 import { CompanyMark } from "@/components/common/company-mark";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { WORK_STATUS_DISPLAY, isClosedWork } from "@/lib/applications";
+import { WORK_STATUS_DISPLAY, isClosedWork, workHref } from "@/lib/applications";
 import { dueLabel } from "@/lib/next-action";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import type { TrialView } from "@/lib/types/domain";
@@ -37,7 +37,7 @@ export function TrialList({
         return (
           <li key={trial.projectId} className={cn(fresh && "bg-accent-50/40")}>
             <Link
-              href={`/candidate/trials/${trial.projectId}`}
+              href={workHref(trial.projectId, trial.opportunityType)}
               className="group flex flex-col gap-3 px-4 py-4 transition-colors hover:bg-ink-50 sm:flex-row sm:items-center"
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -73,7 +73,9 @@ export function TrialList({
                   label={overdue ? "Overdue" : status.label}
                 />
                 <span className="ml-auto inline-flex items-center gap-1 text-sm font-medium text-brand-700 sm:ml-2">
-                  {ACTION[trial.workStatus]}
+                  {trial.opportunityType === "freelance"
+                    ? "Open contract"
+                    : ACTION[trial.workStatus]}
                   <ArrowRight
                     className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
                     aria-hidden

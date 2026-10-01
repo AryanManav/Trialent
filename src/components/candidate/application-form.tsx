@@ -25,6 +25,12 @@ const COPY: Record<
     experienceHint:
       "A project, repository or piece of work that shows the skills this role needs.",
   },
+  freelance: {
+    why: "How would you approach this contract?",
+    whyHint: "Your plan for the milestones or the weekly work, and when you could start.",
+    experience: "Similar work you've delivered",
+    experienceHint: "A client project, repository or portfolio piece like this one.",
+  },
 };
 
 /**

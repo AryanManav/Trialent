@@ -47,6 +47,17 @@ export function LoginForm({ providers }: { providers: OAuthProviderStatus }) {
           next={redirect || undefined}
           onError={setOauthError}
         />
+        <p className="text-center text-xs text-ink-500">
+          By continuing with Google or GitHub you agree to the{" "}
+          <Link href="/terms" className="underline underline-offset-2">
+            Terms of Use
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="underline underline-offset-2">
+            Privacy Notice
+          </Link>
+          .
+        </p>
         <OrDivider />
 
         <form action={formAction} className="space-y-fib7">

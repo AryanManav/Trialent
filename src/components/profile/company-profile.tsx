@@ -71,8 +71,8 @@ export function CompanyProfile({
       company.openProjects.filter((p) => p.opportunityType === "hire").length +
       history.filter((entry) => entry.opportunityType === "hire").length,
     build:
-      company.openProjects.filter((p) => p.opportunityType === "build").length +
-      history.filter((entry) => entry.opportunityType === "build").length,
+      company.openProjects.filter((p) => p.opportunityType !== "hire").length +
+      history.filter((entry) => entry.opportunityType !== "hire").length,
   };
 
   const track = [

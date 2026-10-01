@@ -27,6 +27,8 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { WORK_MODES, companyProfilePath } from "@/lib/constants";
 import { ApplicationForm } from "@/components/candidate/application-form";
 import { HireOpportunityDetail } from "@/components/projects/hire-detail";
+import { FreelanceDetail } from "@/components/projects/freelance-detail";
+import { getMilestonePlan } from "@/lib/data/freelance";
 import { OpportunityBadge } from "@/components/projects/opportunity-badge";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
@@ -114,6 +116,17 @@ export default async function ProjectDetailPage({
     return (
       <HireOpportunityDetail
         project={project}
+        viewerRole={user.role}
+        existing={existing}
+      />
+    );
+  }
+
+  if (project.opportunityType === "freelance") {
+    return (
+      <FreelanceDetail
+        project={project}
+        plan={await getMilestonePlan(project.id)}
         viewerRole={user.role}
         existing={existing}
       />

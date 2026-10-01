@@ -7,6 +7,11 @@ import {
   OPEN_PROJECT_STATUSES,
 } from "@/lib/constants";
 import { projectAvailability } from "@/lib/projects";
+import {
+  FREELANCE_COLUMNS,
+  toFreelanceTerms,
+  type RawFreelanceColumns,
+} from "@/lib/freelance";
 import type {
   BrowseProjectView,
   ProjectDetailView,
@@ -24,9 +29,10 @@ import type {
 } from "@/lib/types/database.types";
 
 const SUMMARY_COLUMNS =
-  "id, slug, title, description, status, expected_hours, payment_amount, currency, application_deadline, company_id, max_applicants, purpose, openings, category, opportunity_type, job_type, work_arrangement, job_location, experience_level, compensation, created_at, assessment_title, assessment_technologies, companies(name), project_skills(skill_name, is_required)";
+  "id, slug, title, description, status, expected_hours, payment_amount, currency, application_deadline, company_id, max_applicants, purpose, openings, category, opportunity_type, job_type, work_arrangement, job_location, experience_level, compensation, created_at, assessment_title, assessment_technologies, companies(name), project_skills(skill_name, is_required), " +
+  FREELANCE_COLUMNS;
 
-interface RawProjectSummary {
+interface RawProjectSummary extends RawFreelanceColumns {
   id: string;
   slug: string;
   title: string;
@@ -76,6 +82,7 @@ function toSummary(row: RawProjectSummary): ProjectSummaryView {
       .sort((a, b) => Number(b.is_required) - Number(a.is_required))
       .map((skill) => skill.skill_name),
     opportunityType: row.opportunity_type ?? "build",
+    freelance: toFreelanceTerms(row),
     jobType: row.job_type ?? null,
     workArrangement: row.work_arrangement ?? null,
     jobLocation: row.job_location ?? null,
@@ -185,7 +192,7 @@ export async function getBrowsableProjectBySlug(
   const { data } = await supabase
     .from("projects")
     .select(
-      "id, slug, title, description, status, expected_hours, payment_amount, currency, application_deadline, company_id, max_applicants, purpose, openings, category, opportunity_type, job_type, work_arrangement, job_location, experience_level, compensation, responsibilities, nice_to_have, created_at, assessment_title, assessment_type, assessment_description, assessment_requirements, assessment_technologies, project_deadline, work_mode, problem_statement, context, requirements, deliverables, acceptance_criteria, evaluation_criteria, companies(name, location, description, website, industry, company_size, logo_url, verified), project_skills(skill_name, is_required)"
+      "id, slug, title, description, status, expected_hours, payment_amount, currency, application_deadline, company_id, max_applicants, purpose, openings, category, opportunity_type, job_type, work_arrangement, job_location, experience_level, compensation, responsibilities, nice_to_have, created_at, assessment_title, assessment_type, assessment_description, assessment_requirements, assessment_technologies, project_deadline, work_mode, problem_statement, context, requirements, deliverables, acceptance_criteria, evaluation_criteria, pricing_model, hourly_rate, hours_per_week, duration_weeks, companies(name, location, description, website, industry, company_size, logo_url, verified), project_skills(skill_name, is_required)"
     )
     .eq("slug", slug)
     .in("status", [...BROWSABLE_PROJECT_STATUSES])

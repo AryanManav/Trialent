@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { loginSchema, signupSchema } from "@/lib/validations";
-import { dashboardFor, resolveUserRole } from "@/lib/constants";
+import { TERMS_VERSION, dashboardFor, resolveUserRole } from "@/lib/constants";
 import type { UserRole } from "@/lib/types/database.types";
 import type { AuthState } from "@/lib/types/actions";
 import { isInternalPath } from "@/lib/utils";
@@ -63,6 +63,7 @@ export async function signupAction(
     email: formData.get("email"),
     password: formData.get("password"),
     role: formData.get("role"),
+    acceptTerms: formData.get("acceptTerms"),
   });
   if (!validated.success) {
     return { error: validated.error.errors[0].message };
@@ -82,6 +83,15 @@ export async function signupAction(
 
   if (error) return { error: error.message };
   if (!data.user) return { error: "Failed to create account. Please try again." };
+
+  // Record which Terms version was accepted. Needs the new session, so it is
+  // skipped if email confirmation is ever switched on — log, don't block.
+  if (data.session) {
+    const { error: termsError } = await supabase.rpc("accept_terms", {
+      accepted_version: TERMS_VERSION,
+    });
+    if (termsError) console.error("accept_terms failed:", termsError.message);
+  }
 
   // The auth trigger normally creates these rows; this backfills if it lags.
   try {

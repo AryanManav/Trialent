@@ -25,8 +25,17 @@ export type ApplicationStatus =
   | "rejected"
   | "withdrawn";
 
-/** Build only: a paid project for one candidate. Hire only: a free job posting. */
-export type OpportunityType = "build" | "hire";
+/**
+ * Build only: a paid project for one candidate. Hire only: a free job posting.
+ * Freelance: a paid contract, delivered and approved milestone by milestone.
+ */
+export type OpportunityType = "build" | "hire" | "freelance";
+/** Freelance: a fixed price split into milestones, or an hourly rate. */
+export type PricingModel = "fixed" | "hourly";
+/** 'planned' milestones come with a fixed-price brief; 'hours' are weekly logs. */
+export type MilestoneKind = "planned" | "hours";
+export type MilestoneStatus =
+  "planned" | "submitted" | "changes_requested" | "approved" | "paid" | "cancelled";
 export type JobType = "full_time" | "part_time" | "internship" | "contract";
 export type WorkArrangement = "remote" | "hybrid" | "onsite";
 export type ExperienceLevel = "entry" | "junior" | "mid" | "senior";
@@ -101,6 +110,8 @@ export interface Database {
           role: UserRole;
           avatar_url: string | null;
           email_verified: boolean;
+          terms_version: string | null;
+          terms_accepted_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -415,6 +426,10 @@ export interface Database {
           assessment_description: string | null;
           assessment_requirements: string[];
           assessment_technologies: string[];
+          pricing_model: PricingModel | null;
+          hourly_rate: number | null;
+          hours_per_week: number | null;
+          duration_weeks: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -455,6 +470,10 @@ export interface Database {
           assessment_description?: string | null;
           assessment_requirements?: string[];
           assessment_technologies?: string[];
+          pricing_model?: PricingModel | null;
+          hourly_rate?: number | null;
+          hours_per_week?: number | null;
+          duration_weeks?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -553,6 +572,42 @@ export interface Database {
           updated_at: string;
         };
         Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      freelance_milestones: {
+        Row: {
+          id: string;
+          project_id: string;
+          position: number;
+          kind: MilestoneKind;
+          title: string;
+          description: string | null;
+          amount: number;
+          hours: number | null;
+          period_start: string | null;
+          due_date: string | null;
+          status: MilestoneStatus;
+          work_url: string | null;
+          work_note: string | null;
+          review_note: string | null;
+          submitted_at: string | null;
+          reviewed_at: string | null;
+          paid_at: string | null;
+          payment_confirmed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        /** Only the plan, while posting; everything after goes through functions. */
+        Insert: {
+          project_id: string;
+          position: number;
+          kind?: "planned";
+          title: string;
+          description?: string | null;
+          amount: number;
+          due_date?: string | null;
+        };
         Update: never;
         Relationships: [];
       };
@@ -881,6 +936,50 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
+      freelance_milestone_plan: {
+        Args: { target_project_id: string };
+        Returns: {
+          position: number;
+          title: string;
+          description: string | null;
+          amount: number;
+          due_date: string | null;
+        }[];
+      };
+      submit_freelance_milestone: {
+        Args: { target_milestone_id: string; work_link: string; note: string };
+        Returns: undefined;
+      };
+      log_freelance_hours: {
+        Args: {
+          target_project_id: string;
+          week_start: string;
+          worked: number;
+          note: string;
+          work_link: string;
+        };
+        Returns: string;
+      };
+      review_freelance_milestone: {
+        Args: { target_milestone_id: string; decision: string; note: string };
+        Returns: undefined;
+      };
+      mark_freelance_milestone_paid: {
+        Args: { target_milestone_id: string };
+        Returns: undefined;
+      };
+      confirm_freelance_payment: {
+        Args: { target_milestone_id: string };
+        Returns: undefined;
+      };
+      complete_freelance_contract: {
+        Args: { target_project_id: string };
+        Returns: string;
+      };
+      accept_terms: {
+        Args: { accepted_version: string };
+        Returns: undefined;
+      };
       is_admin: {
         Args: Record<PropertyKey, never>;
         Returns: boolean;

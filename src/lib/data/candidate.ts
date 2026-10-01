@@ -219,12 +219,16 @@ export async function getCandidateApplications(
   });
 }
 
+type RawCompletedProject = RawFeedbackProject & {
+  opportunity_type: OpportunityType | null;
+  companies: RawCompany | RawCompany[] | null;
+  freelance_milestones:
+    { amount: number; status: string; reviewed_at: string | null }[] | null;
+};
+
 interface RawCompletedSelection {
   project_id: string;
-  projects:
-    | (RawFeedbackProject & { companies: RawCompany | RawCompany[] | null })
-    | (RawFeedbackProject & { companies: RawCompany | RawCompany[] | null })[]
-    | null;
+  projects: RawCompletedProject | RawCompletedProject[] | null;
 }
 
 /**
@@ -239,7 +243,9 @@ export async function getCandidateVerifiedTrials(
   const supabase = await createClient();
   const { data } = await supabase
     .from("project_selections")
-    .select("project_id, projects(id, title, payment_amount, currency, companies(name))")
+    .select(
+      "project_id, projects(id, title, payment_amount, currency, opportunity_type, companies(name), freelance_milestones(amount, status, reviewed_at))"
+    )
     .eq("candidate_id", candidateId)
     .eq("status", "completed");
 
@@ -291,11 +297,45 @@ export async function getCandidateVerifiedTrials(
   return selections.flatMap((row) => {
     const decision = finalDecision.get(row.project_id);
     const feedback = feedbackByProject.get(row.project_id);
+    const project = one(row.projects);
+
+    // A freelance contract only completes with approved milestones (the
+    // database checks); its evidence is that approved work and what it earned.
+    if (project?.opportunity_type === "freelance") {
+      const approved = (project.freelance_milestones ?? []).filter(
+        (m) => m.status === "approved" || m.status === "paid"
+      );
+      const lastApproval = approved
+        .map((m) => m.reviewed_at)
+        .filter((at): at is string => at !== null)
+        .sort()
+        .at(-1);
+      return [
+        {
+          id: row.project_id,
+          projectId: row.project_id,
+          projectTitle: project.title,
+          companyName: one(project.companies)?.name ?? "Company",
+          completedAt: lastApproval ?? new Date().toISOString(),
+          paymentAmount: approved.reduce((sum, m) => sum + m.amount, 0),
+          currency: project.currency || DEFAULT_CURRENCY,
+          acceptanceNote: null,
+          feedback: feedback
+            ? {
+                requirementsCompleted: feedback.requirements_completed,
+                technicalQuality: feedback.technical_quality,
+                writtenFeedback: feedback.written_feedback,
+              }
+            : null,
+          outcome: outcomeByProject.get(row.project_id) ?? null,
+        },
+      ];
+    }
+
     // Evidence means accepted work. Older projects evaluated before submission
     // decisions existed still count if the startup wrote feedback.
     if (!(decision?.accepted || (!decision && feedback))) return [];
 
-    const project = one(row.projects);
     return [
       {
         id: row.project_id,

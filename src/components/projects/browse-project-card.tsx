@@ -4,7 +4,7 @@ import { CompanyMark } from "@/components/common/company-mark";
 import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
 import { RoleBadge } from "@/components/profile/role-badge";
 import { OpportunityBadge } from "@/components/projects/opportunity-badge";
-import { JOB_TYPES, WORK_ARRANGEMENTS } from "@/lib/constants";
+import { JOB_TYPES, PRICING_MODELS, WORK_ARRANGEMENTS } from "@/lib/constants";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { BrowseProjectView } from "@/lib/types/domain";
 
@@ -22,12 +22,15 @@ const STACK_SHOWN = 4;
 const shortDate = (value: string) => formatDate(value).replace(/ \d{4}$/, "");
 
 /**
- * One opportunity in Browse. Its type leads — HIRE ONLY (a role) or BUILD
- * ONLY (a paid project) — and the facts shown follow from it: openings and
- * applications for a role; fee, effort and one selected candidate for a build.
+ * One opportunity in Browse. Its type leads — HIRE ONLY (a role), BUILD ONLY
+ * (a paid project) or FREELANCE (a paid contract) — and the facts shown follow
+ * from it: openings and applications for a role; fee, effort and one selected
+ * candidate for a build; the price and its basis for a contract.
  */
 export function BrowseProjectCard({ project }: { project: BrowseProjectView }) {
   const hire = project.opportunityType === "hire";
+  const terms = project.freelance;
+  const hourly = terms?.pricingModel === "hourly" && terms.hourlyRate !== null;
   const status = AVAILABILITY[project.availability];
   const extra = project.stack.length - STACK_SHOWN;
 
@@ -54,12 +57,20 @@ export function BrowseProjectCard({ project }: { project: BrowseProjectView }) {
       ]
     : [
         {
-          label: "Fee",
-          value: formatCurrency(project.paymentAmount, project.currency),
+          label: hourly ? "Rate" : terms ? "Contract" : "Fee",
+          value: hourly
+            ? `${formatCurrency(terms.hourlyRate ?? 0, project.currency)}/hr`
+            : formatCurrency(project.paymentAmount, project.currency),
           icon: null,
           money: true,
         },
-        { label: "Effort", value: `${project.expectedHours}h`, icon: Clock },
+        hourly
+          ? {
+              label: "Commitment",
+              value: `${terms.hoursPerWeek}h × ${terms.durationWeeks}w`,
+              icon: Clock,
+            }
+          : { label: "Effort", value: `${project.expectedHours}h`, icon: Clock },
         {
           label: "Apply by",
           value: shortDate(project.applicationDeadline),
@@ -178,10 +189,12 @@ export function BrowseProjectCard({ project }: { project: BrowseProjectView }) {
         <span>
           {hire
             ? (project.compensation ?? "Hired on an unpaid assessment")
-            : "Paid project · 1 candidate will be selected"}
+            : terms
+              ? `${PRICING_MODELS[terms.pricingModel].label} contract · 1 freelancer`
+              : "Paid project · 1 candidate will be selected"}
         </span>
         <span className="inline-flex items-center gap-1 text-sm font-medium text-brand-700">
-          {hire ? "View opportunity" : "View project"}
+          {hire ? "View opportunity" : terms ? "View contract" : "View project"}
           <ArrowRight
             className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
             aria-hidden
