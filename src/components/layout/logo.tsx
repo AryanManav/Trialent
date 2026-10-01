@@ -1,12 +1,14 @@
 import { cn } from "@/lib/utils";
 
+/** Brand colours. The lime is the mark's alone; the UI stays monochrome. */
+export const BRAND_LIME = "#c6f432";
+export const BRAND_INK = "#0d1117";
+
 /**
- * The Trialent wordmark: "trial" set in a bordered tag — the product's core
- * unit, a trial of real work — followed by "ent". Set in the app's own type
- * (Inter), so it themes with the page: the tag is a raised surface with a
- * hairline border in light and dark alike.
+ * The Trialent logo: the mark followed by the name, set in the app's own type
+ * (Inter) so it themes with the page.
  *
- * `markOnly` shows the icon instead, for tight spaces and avatars.
+ * `markOnly` shows just the mark, for tight spaces and avatars.
  */
 export function Logo({
   markOnly = false,
@@ -21,64 +23,47 @@ export function Logo({
   if (markOnly) return <LogoMark className={cn("h-7 w-7", className)} />;
 
   return (
-    <span
-      className={cn(
-        "inline-flex select-none items-baseline text-[19px] font-semibold leading-none tracking-[-0.035em]",
-        inverted ? "text-white" : "text-ink-900",
-        className
-      )}
-    >
+    <span className={cn("inline-flex select-none items-center gap-2", className)}>
+      <LogoMark className="h-7 w-7" />
       <span
         className={cn(
-          "mr-[2px] rounded-[6px] border py-[3px] pl-[4px] pr-[3px]",
-          inverted
-            ? "border-white/35 bg-white/10"
-            : "border-line-strong bg-surface shadow-[inset_0_1px_0_rgb(255_255_255/0.5)] dark:bg-raised dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.05)]"
+          "text-[21px] font-bold leading-none tracking-[-0.045em]",
+          inverted ? "text-white" : "text-ink-900"
         )}
       >
-        trial
+        trialent
       </span>
-      ent
     </span>
   );
 }
 
 /**
- * The icon: the tag with "tr" inside and a green status dot — the verified
- * result. Drawn as strokes, not text, so it looks identical everywhere (the
- * favicon and app icon — src/app/icon.svg and apple-icon.tsx — repeat it).
+ * The mark — "the ticking t": the t of trial drawn in one stroke whose foot
+ * turns up into a tick, a trial that ends in proof. Ink on lime in every
+ * theme; the favicon (src/app/icon.svg) and home-screen icon
+ * (src/app/apple-icon.tsx) repeat this geometry.
  */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 32 32"
+      viewBox="0 0 48 48"
       aria-hidden
       className={cn("shrink-0", className)}
       fill="none"
     >
-      <rect width="32" height="32" rx="8" className="fill-inverse" />
-      <rect
-        x="5.5"
-        y="9.5"
-        width="20"
-        height="14"
-        rx="4"
-        strokeWidth="1.6"
-        className="stroke-inverse-fg opacity-50"
-      />
+      <rect width="48" height="48" rx="13" fill={BRAND_LIME} />
       <path
-        d="M12 11.5V18.8Q12 21 14.2 21H14.8M9.8 14.2H14.6M18 14.2V21M18 16.8Q18 14.2 21 14.2"
-        strokeWidth="2.2"
+        d="M20 8.5V29.8C20 35 22.6 37.6 26.6 37.6C28.8 37.6 30.3 36.6 31.6 34.9L38.5 25.6"
+        stroke={BRAND_INK}
+        strokeWidth="6.2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="stroke-inverse-fg"
       />
-      <circle
-        cx="26"
-        cy="9.5"
-        r="3.2"
-        strokeWidth="1.6"
-        className="fill-money-500 stroke-inverse"
+      <path
+        d="M12.5 16.5H28"
+        stroke={BRAND_INK}
+        strokeWidth="6.2"
+        strokeLinecap="round"
       />
     </svg>
   );

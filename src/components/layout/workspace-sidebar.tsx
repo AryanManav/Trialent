@@ -56,7 +56,7 @@ export function WorkspaceSidebar({ links }: { links: NavLink[] }) {
             className={cn(
               "relative flex items-center rounded-md px-3 py-1.5 text-sm transition-colors",
               current
-                ? "bg-ink-100 font-medium text-ink-900 before:absolute before:inset-y-1.5 before:-left-2 before:w-1 before:rounded-full before:bg-brand-600"
+                ? "bg-ink-100 font-medium text-ink-900 before:absolute before:inset-y-1.5 before:-left-2 before:w-1 before:rounded-full before:bg-lime"
                 : "text-ink-600 hover:bg-ink-50 hover:text-ink-900"
             )}
           >

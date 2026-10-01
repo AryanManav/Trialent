@@ -176,7 +176,7 @@ export default async function ProjectDetailPage({
         </div>
       </header>
 
-      <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="mt-8 grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-6">
           <BriefSection id="overview" title="Overview" icon={FileText}>
             <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-700">

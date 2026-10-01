@@ -36,7 +36,15 @@
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-500/60 ring-offset-2 ring-offset-surface;
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-surface;
+  }
+}
+
+@layer base {
+  /* Selected text wears the brand lime. */
+  ::selection {
+    background: rgb(var(--lime));
+    color: rgb(var(--lime-fg));
   }
 }
 

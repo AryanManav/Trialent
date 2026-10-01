@@ -34,7 +34,11 @@ export function SectionHeading({
       )}
     >
       {chip && (
-        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+        <p className="inline-flex items-center gap-1.5 rounded-full bg-lime-soft px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-ink-900 dark:text-lime">
+          <span
+            aria-hidden
+            className="h-1.5 w-1.5 rounded-full bg-lime ring-1 ring-lime-fg/20"
+          />
           {chip}
         </p>
       )}

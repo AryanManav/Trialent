@@ -21,8 +21,8 @@ export function AuthShell({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-brand-100 sm:p-fib4">
-      <div className="mx-auto grid min-h-screen w-full max-w-[1760px] overflow-clip bg-surface shadow-sm sm:min-h-[calc(100vh-1rem)] sm:rounded-2xl lg:grid-cols-[1fr_minmax(0,46%)]">
+    <div className="min-h-screen bg-canvas sm:p-fib4">
+      <div className="mx-auto grid grid-cols-1 min-h-screen w-full max-w-[1760px] overflow-clip bg-surface shadow-sm sm:min-h-[calc(100vh-1rem)] sm:rounded-2xl lg:grid-cols-[1fr_minmax(0,46%)]">
         <div className="flex flex-col px-fib7 py-fib7 sm:px-fib8">
           <div className="flex items-center justify-between gap-fib5">
             <Link

@@ -1,62 +1,51 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  MarketingHero,
+  StepList,
+  type Step,
+} from "@/components/marketing/marketing-page";
+
+const STEPS: Step[] = [
+  {
+    title: "A company posts a scoped project",
+    body: "A real, job-relevant piece of work with clear acceptance criteria, the skills it needs, and the fee stated upfront (e.g. ₹5,000).",
+  },
+  {
+    title: "Candidates read the brief and apply",
+    body: "Engineers find projects that match their stack and apply with their profile and how they'd approach the work.",
+  },
+  {
+    title: "The company selects one candidate",
+    body: "It reviews applicants and picks the best fit. Once the work is accepted, the company pays the candidate directly — Trialent never holds the money.",
+  },
+  {
+    title: "The candidate builds and submits",
+    body: "Within the deadline, with a visible trail: commits, clarifying questions, and a repository, live demo and documentation at the end.",
+  },
+  {
+    title: "The company evaluates and decides",
+    body: "The team reviews the actual code, tests and docs against the criteria it published, records structured feedback, and decides whether to interview or hire.",
+  },
+];
 
 export default function HowItWorksPage() {
-  const steps = [
-    {
-      num: "01",
-      title: "Company Creates a Standardized Project",
-      desc: "Startups define a real, job-relevant micro-project with clear acceptance criteria, required skills, and the fee stated upfront (e.g. ₹5,000).",
-    },
-    {
-      num: "02",
-      title: "Candidates Discover & Apply",
-      desc: "Emerging engineers explore relevant projects matching their tech stack and apply with their profile and execution approach.",
-    },
-    {
-      num: "03",
-      title: "Candidate Selection",
-      desc: "The company reviews applicants and selects the best fit. Once the work is accepted, the company pays the candidate directly — Trialent never holds the money.",
-    },
-    {
-      num: "04",
-      title: "Project Execution & Submission",
-      desc: "The candidate completes the project within the designated deadline and submits their GitHub repo, live demo, and documentation.",
-    },
-    {
-      num: "05",
-      title: "Evidence-Based Evaluation & Hiring Decision",
-      desc: "The engineering team reviews actual code, tests, and documentation. They record objective feedback and decide whether to interview or extend a full-time offer.",
-    },
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8 space-y-12">
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">
-          The Trialent Evaluation Loop
-        </h1>
-        <p className="text-slate-600 max-w-xl mx-auto">
-          How startups turn hiring uncertainty into high-confidence engineering decisions
-          through real work.
-        </p>
-      </div>
-
-      <div className="space-y-6">
-        {steps.map((step) => (
-          <Card key={step.num} className="border-slate-200">
-            <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-              <div className="h-10 w-10 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center font-semibold text-indigo-700 shrink-0">
-                {step.num}
-              </div>
-              <div>
-                <CardTitle className="text-lg text-slate-900">{step.title}</CardTitle>
-                <CardContent className="p-0 pt-2 text-sm text-slate-600">
-                  {step.desc}
-                </CardContent>
-              </div>
-            </CardHeader>
-          </Card>
-        ))}
+    <div className="mx-auto max-w-6xl space-y-14 px-4 py-16 sm:px-6 lg:py-20">
+      <MarketingHero
+        chip="How it works"
+        title="Five steps from brief to decision."
+        lead="The same loop for every project, so every candidate is judged on real work and the same criteria."
+      />
+      <StepList steps={STEPS} />
+      <div className="flex justify-center">
+        <Link href="/projects">
+          <Button size="lg">
+            Browse projects
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Button>
+        </Link>
       </div>
     </div>
   );

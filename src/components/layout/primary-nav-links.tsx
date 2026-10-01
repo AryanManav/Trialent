@@ -77,7 +77,7 @@ export function PrimaryNavLinks({
             className={cn(
               "relative flex items-center gap-1.5 border-b-2 px-2.5 text-sm transition-colors",
               current
-                ? "border-ink-900 font-medium text-ink-900"
+                ? "border-lime font-medium text-ink-900"
                 : "border-transparent text-ink-600 hover:text-ink-900"
             )}
           >

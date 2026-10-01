@@ -303,7 +303,7 @@ export default async function SearchPage({
 
           <LinkTabs tabs={tabs} active={type} label="Result types" />
 
-          <div className="grid items-start gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
             {filters && (
               <aside>
                 {/*

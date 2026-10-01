@@ -4,15 +4,21 @@ import type { Config } from "tailwindcss";
  * Colours come from CSS variables in src/app/tokens.css, one set for light and
  * one for dark, so every class (bg-ink-50, text-brand-700, …) follows the
  * theme. Each colour has one job so it always means something:
- *   brand (blue)     — every action: buttons, links, active navigation
+ *   brand (olive→lime) — every action: links, selected states, active navigation.
+ *                      Built around the logo's lime: 300 is the logo colour,
+ *                      600 carries white text, 700 is link text.
  *   money (green)    — fees, success, accepted work
  *   accent (orange)  — attention: unread counts, updates, highlights
  *   rose             — danger only (delete, reject, errors)
  *   amber            — waiting (under review)
  *   sky (teal)       — information, and the HIRE ONLY badge
+ *   lime             — the brand signature, from the logo: selection, the
+ *                      "you are here" marks, a few marketing moments. Purely
+ *                      decorative — never the only signal, never for focus
+ *                      (it's too light on white to meet contrast).
  *
  * The palette is deliberately restrained (GitHub-inspired): neutral surfaces
- * separated by borders, one blue for action, colour only where it means
+ * separated by borders, one olive-lime for action, colour only where it means
  * something.
  */
 const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
@@ -66,6 +72,12 @@ const config: Config = {
         amber: ramp("amber"),
         rose: ramp("rose"),
         sky: ramp("sky"),
+        // Replaces Tailwind's lime ramp: one brand colour, not a scale.
+        lime: {
+          DEFAULT: token("lime"),
+          fg: token("lime-fg"),
+          soft: token("lime-soft"),
+        },
 
         // Surfaces, from back to front: the page, a card, something above a card.
         canvas: token("canvas"),

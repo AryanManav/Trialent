@@ -12,7 +12,7 @@ const ICONS: Record<OpportunityType, typeof Hammer> = {
 const TINTS: Record<OpportunityType, string> = {
   hire: "border-sky-200 bg-sky-50 text-sky-800",
   build: "border-brand-200 bg-brand-50 text-brand-800",
-  freelance: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  freelance: "border-ink-300 bg-ink-100 text-ink-800",
 };
 
 /**

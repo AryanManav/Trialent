@@ -17,11 +17,11 @@ export function AuthAside({
   body: string;
 }) {
   return (
-    <aside className="relative hidden overflow-hidden bg-brand-600 lg:block">
+    <aside className="relative hidden overflow-hidden bg-night lg:block">
       {/* Layered shapes */}
-      <div className="absolute -left-24 -top-32 h-[28rem] w-[28rem] rounded-[6rem] bg-brand-800/70 rotate-12" />
-      <div className="absolute -bottom-40 -right-24 h-[34rem] w-[34rem] rounded-[8rem] bg-brand-400/50 -rotate-12" />
-      <div className="absolute bottom-[-6rem] left-[-4rem] h-[22rem] w-[22rem] rounded-full bg-brand-300/30" />
+      <div className="absolute -left-24 -top-32 h-[28rem] w-[28rem] rounded-[6rem] bg-white/[0.04] rotate-12" />
+      <div className="absolute -bottom-40 -right-24 h-[34rem] w-[34rem] rounded-[8rem] bg-lime/15 -rotate-12" />
+      <div className="absolute bottom-[-6rem] left-[-4rem] h-[22rem] w-[22rem] rounded-full bg-lime/10" />
 
       <div className="relative flex h-full flex-col justify-center gap-fib7 px-fib8 py-fib9">
         {/* Evidence card */}
@@ -36,11 +36,11 @@ export function AuthAside({
             {[40, 68, 52, 88, 74].map((height, index) => (
               <span
                 key={height}
-                className="flex-1 rounded-full bg-brand-100"
+                className="flex-1 rounded-full bg-lime-soft"
                 style={{ height: `${height / 2}px` }}
               >
                 <span
-                  className="block w-full rounded-full bg-brand-600"
+                  className="block w-full rounded-full bg-lime"
                   style={{ height: `${height / 2}px`, opacity: 0.4 + index * 0.15 }}
                 />
               </span>
@@ -57,7 +57,7 @@ export function AuthAside({
         <div className="w-[24rem] rounded-2xl bg-surface p-fib7 shadow-xl">
           <div className="flex items-start justify-between gap-fib6">
             <div className="flex-1 space-y-fib4" aria-hidden="true">
-              <span className="block h-2 w-16 rounded-full bg-brand-600" />
+              <span className="block h-2 w-16 rounded-full bg-lime" />
               <span className="block h-2 w-full rounded-full bg-ink-200" />
               <span className="block h-2 w-3/4 rounded-full bg-ink-200" />
               <span className="block h-2 w-5/6 rounded-full bg-ink-200" />

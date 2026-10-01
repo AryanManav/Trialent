@@ -151,15 +151,27 @@ export default async function LandingPage({
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 hidden h-[34rem] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgb(var(--brand-600)/0.14),transparent)] dark:block"
+          className="pointer-events-none absolute inset-x-0 top-0 hidden h-[34rem] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgb(var(--lime)/0.08),transparent)] dark:block"
         />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:py-24">
+        <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:py-24">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-lime-soft px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-ink-900 dark:text-lime">
+              <span
+                aria-hidden
+                className="h-1.5 w-1.5 rounded-full bg-lime ring-1 ring-lime-fg/20"
+              />
               Project-based talent evaluation
             </p>
             <h1 className="mt-4 text-balance text-4xl font-semibold text-ink-950 sm:text-5xl lg:text-6xl">
-              Evaluate talent through real work.
+              Evaluate talent through{" "}
+              <span className="relative whitespace-nowrap">
+                {/* A highlighter stroke, the logo's lime. */}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-[-0.06em] bottom-[0.06em] h-[0.34em] -rotate-1 rounded-[0.08em] bg-lime/80 dark:bg-lime/25"
+                />
+                <span className="relative">real work.</span>
+              </span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-ink-600">
               Startups evaluate engineers through standardized, paid micro-projects —
@@ -454,7 +466,10 @@ export default async function LandingPage({
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/projects">
-              <Button size="lg" className="bg-white text-night hover:bg-white/90">
+              <Button
+                size="lg"
+                className="bg-lime text-lime-fg shadow-none hover:bg-lime/90"
+              >
                 Browse projects
               </Button>
             </Link>

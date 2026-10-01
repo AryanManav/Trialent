@@ -221,7 +221,7 @@ export function SignupForm({ providers }: { providers: OAuthProviderStatus }) {
         <button
           type="submit"
           disabled={isPending}
-          className="group flex h-12 w-full items-center justify-center gap-fib4 rounded-full bg-brand-600 pl-fib7 pr-fib4 font-semibold text-white transition-colors hover:bg-brand-700 disabled:opacity-60"
+          className="group flex h-12 w-full items-center justify-center gap-fib4 rounded-full bg-inverse pl-fib7 pr-fib4 font-semibold text-inverse-fg transition-colors hover:bg-inverse/90 disabled:opacity-60"
         >
           {isPending ? (
             <Loader2 className="h-5 w-5 animate-spin" />

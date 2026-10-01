@@ -47,7 +47,7 @@ export function HeroWorkflow() {
     <div className="relative mx-auto w-full max-w-[34rem]" aria-hidden>
       {/* Project window */}
       <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-lg">
-        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
           <div className="min-w-0">
             <p className="text-2xs font-medium uppercase tracking-wider text-ink-400">
               Paid project · Sample

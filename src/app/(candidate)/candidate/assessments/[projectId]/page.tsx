@@ -146,7 +146,7 @@ export default async function CandidateAssessmentPage({
         </p>
       )}
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <section
           aria-labelledby="assessment-title"
           className="space-y-5 rounded-lg border border-line bg-surface p-5"

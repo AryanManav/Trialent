@@ -193,7 +193,7 @@ export function BrowseProjectCard({ project }: { project: BrowseProjectView }) {
               ? `${PRICING_MODELS[terms.pricingModel].label} contract · 1 freelancer`
               : "Paid project · 1 candidate will be selected"}
         </span>
-        <span className="inline-flex items-center gap-1 text-sm font-medium text-brand-700">
+        <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-sm font-medium text-brand-700">
           {hire ? "View opportunity" : terms ? "View contract" : "View project"}
           <ArrowRight
             className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"

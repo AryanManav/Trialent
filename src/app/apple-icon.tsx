@@ -5,7 +5,7 @@ export const contentType = "image/png";
 
 // The same geometry as src/app/icon.svg, without the rounded corners —
 // iOS applies its own mask to home-screen icons.
-const MARK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" fill="#1f2328"/><rect x="5.5" y="9.5" width="20" height="14" rx="4" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.6"/><path d="M12 11.5V18.8Q12 21 14.2 21H14.8M9.8 14.2H14.6M18 14.2V21M18 16.8Q18 14.2 21 14.2" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="26" cy="9.5" r="3.2" fill="#3fb950" stroke="#1f2328" stroke-width="1.6"/></svg>`;
+const MARK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" fill="#c6f432"/><path d="M20 8.5V29.8C20 35 22.6 37.6 26.6 37.6C28.8 37.6 30.3 36.6 31.6 34.9L38.5 25.6" stroke="#0d1117" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 16.5H28" stroke="#0d1117" stroke-width="6.2" stroke-linecap="round"/></svg>`;
 
 /** The home-screen icon, rendered from the brand mark. */
 export default function AppleIcon() {

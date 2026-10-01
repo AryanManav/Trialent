@@ -43,7 +43,7 @@ export function LinkTabs({
                 className={cn(
                   "-mb-px flex items-center gap-1.5 whitespace-nowrap border-b-2 pb-2.5 pt-1 text-sm transition-colors",
                   current
-                    ? "border-brand-600 font-medium text-ink-900"
+                    ? "border-lime font-medium text-ink-900"
                     : "border-transparent text-ink-500 hover:border-ink-300 hover:text-ink-800"
                 )}
               >
@@ -52,7 +52,7 @@ export function LinkTabs({
                   <span
                     className={cn(
                       "tabular rounded px-1.5 text-2xs font-medium",
-                      current ? "bg-brand-50 text-brand-700" : "bg-ink-100 text-ink-500"
+                      current ? "bg-lime-soft text-ink-900" : "bg-ink-100 text-ink-500"
                     )}
                   >
                     {tab.count}

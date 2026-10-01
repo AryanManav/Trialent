@@ -2,7 +2,7 @@
  * Design tokens. Every colour in the app resolves to one of these variables,
  * as space-separated RGB so Tailwind's opacity modifiers work.
  *
- * Palette: restrained, GitHub-inspired — blue for action, green for success,
+ * Palette: restrained, GitHub-inspired — olive-lime for action, green for success,
  * neutral grey surfaces separated by borders.
  *
  * Light and dark are two tunings of the same scales, not an inversion:
@@ -25,17 +25,17 @@
   --ink-800: 37 41 46;
   --ink-900: 31 35 40;
   --ink-950: 1 4 9;
-  --brand-50: 221 244 255;
-  --brand-100: 182 227 255;
-  --brand-200: 128 204 255;
-  --brand-300: 84 174 255;
-  --brand-400: 33 139 255;
-  --brand-500: 9 105 218;
-  --brand-600: 9 105 218;
-  --brand-700: 5 80 174;
-  --brand-800: 3 61 139;
-  --brand-900: 10 48 105;
-  --brand-950: 5 29 77;
+  --brand-50: 247 254 231;
+  --brand-100: 236 252 203;
+  --brand-200: 217 249 157;
+  --brand-300: 198 244 50;
+  --brand-400: 163 230 53;
+  --brand-500: 101 163 13;
+  --brand-600: 77 124 15;
+  --brand-700: 63 98 18;
+  --brand-800: 54 83 20;
+  --brand-900: 26 46 5;
+  --brand-950: 13 23 3;
   --money-50: 218 251 225;
   --money-100: 172 238 187;
   --money-200: 111 221 139;
@@ -99,6 +99,10 @@
   --inverse: 31 35 40;
   --inverse-fg: 255 255 255;
   --night: 31 35 40;
+  /* Brand signature — the logo's lime. Decoration only, never a meaning. */
+  --lime: 198 244 50;
+  --lime-fg: 13 17 23;
+  --lime-soft: 242 252 207;
   --night-line: 50 56 63;
   --shadow-xs: 0 1px 0 rgb(31 35 40 / 0.04);
   --shadow-sm: 0 1px 0 rgb(31 35 40 / 0.04);
@@ -120,17 +124,17 @@
   --ink-800: 230 237 243;
   --ink-900: 240 246 252;
   --ink-950: 255 255 255;
-  --brand-50: 18 29 47;
-  --brand-100: 21 42 74;
-  --brand-200: 28 61 110;
-  --brand-300: 31 74 138;
-  --brand-400: 56 139 253;
-  --brand-500: 47 129 247;
-  --brand-600: 31 111 235;
-  --brand-700: 88 166 255;
-  --brand-800: 121 192 255;
-  --brand-900: 165 214 255;
-  --brand-950: 202 232 255;
+  --brand-50: 25 31 14;
+  --brand-100: 32 41 15;
+  --brand-200: 46 60 18;
+  --brand-300: 63 85 22;
+  --brand-400: 132 204 22;
+  --brand-500: 163 230 53;
+  --brand-600: 77 124 15;
+  --brand-700: 198 244 50;
+  --brand-800: 217 249 157;
+  --brand-900: 236 252 203;
+  --brand-950: 247 254 231;
   --money-50: 18 38 30;
   --money-100: 21 50 31;
   --money-200: 28 68 40;
@@ -194,6 +198,9 @@
   --inverse: 240 246 252;
   --inverse-fg: 13 17 23;
   --night: 22 27 34;
+  --lime: 198 244 50;
+  --lime-fg: 13 17 23;
+  --lime-soft: 38 48 14;
   --night-line: 48 54 61;
   --shadow-xs: 0 0 #0000;
   --shadow-sm: 0 0 #0000;

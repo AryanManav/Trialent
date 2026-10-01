@@ -29,7 +29,7 @@ export async function PublicNavbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-line bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/85">
+      <header className="sticky top-0 z-50 w-full border-b border-line bg-surface">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-4 px-4 sm:px-6">
           <Link
             href={homeFor(user?.role)}
