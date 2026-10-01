@@ -12,8 +12,9 @@ import {
   pipelineStage,
 } from "@/lib/company";
 import { JOB_TYPES, WORK_ARRANGEMENTS } from "@/lib/constants";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import type { CompanyProjectView, PipelineEntry } from "@/lib/types/domain";
+import { listingTerms } from "@/lib/projects";
 
 /** A section title with an optional "see all" link, GitHub-style: small and quiet. */
 export function SectionHeading({
@@ -177,17 +178,21 @@ export function ActiveBuildList({
             <div className="min-w-0 space-y-1">
               <div className="flex flex-wrap items-center gap-2">
                 <Link
-                  href={`/company/projects/${project.id}`}
+                  href={
+                    project.freelance
+                      ? `/company/projects/${project.id}/contract`
+                      : `/company/projects/${project.id}`
+                  }
                   className="truncate text-sm font-semibold text-ink-900 hover:text-brand-700 hover:underline"
                 >
                   {project.title}
                 </Link>
-                <OpportunityBadge type="build" size="sm" />
+                <OpportunityBadge type={project.opportunityType} size="sm" />
                 <StatusBadge size="sm" tone={status.tone} label={status.label} />
               </div>
               <p className="text-xs text-ink-500">
                 <span className="tabular font-medium text-ink-700">
-                  {formatCurrency(project.paymentAmount, project.currency)}
+                  {listingTerms(project).price}
                 </span>
                 {builders.length === 0
                   ? ` · ${project.activeApplications} applicant${project.activeApplications === 1 ? "" : "s"} · Apply by ${formatDate(project.applicationDeadline)}`

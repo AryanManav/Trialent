@@ -9,7 +9,8 @@ import {
   weekStartOf,
 } from "../lib/freelance";
 import { workHref } from "../lib/applications";
-import { parseProjectFilters } from "../lib/projects";
+import { listingTerms, parseProjectFilters } from "../lib/projects";
+import { parseIndiaDateTime } from "../lib/utils";
 import {
   createFreelanceSchema,
   logHoursSchema,
@@ -286,5 +287,75 @@ describe("working a contract", () => {
     expect(
       logHoursSchema.safeParse({ ...base, weekStart: "2026-09-28", hours: "90" }).success
     ).toBe(false);
+  });
+});
+
+describe("listing terms", () => {
+  const base = {
+    paymentAmount: 6000,
+    currency: "INR",
+    expectedHours: 8,
+    compensation: null,
+    assessmentTitle: null,
+    freelance: null,
+  };
+
+  it("never shows a hire-only role as ₹0", () => {
+    const terms = listingTerms({
+      ...base,
+      opportunityType: "hire",
+      paymentAmount: 0,
+      expectedHours: 6,
+      compensation: "₹6–9 LPA",
+      assessmentTitle: "Design a queue API",
+    });
+    expect(terms).toEqual({ price: "₹6–9 LPA", effort: "Role · ~6h unpaid assessment" });
+    expect(
+      listingTerms({ ...base, opportunityType: "hire", paymentAmount: 0 }).price
+    ).toBe("Role");
+  });
+
+  it("shows a build project's fee and effort", () => {
+    expect(listingTerms({ ...base, opportunityType: "build" })).toEqual({
+      price: "₹6,000",
+      effort: "8h of work",
+    });
+  });
+
+  it("shows an hourly contract's rate and commitment", () => {
+    const terms = listingTerms({
+      ...base,
+      opportunityType: "freelance",
+      paymentAmount: 64000,
+      freelance: {
+        pricingModel: "hourly",
+        hourlyRate: 800,
+        hoursPerWeek: 10,
+        durationWeeks: 8,
+      },
+    });
+    expect(terms).toEqual({
+      price: "₹800/hr",
+      effort: "Freelance · 10h a week for 8 weeks",
+    });
+  });
+});
+
+describe("form date-times", () => {
+  it("reads a datetime-local value as India time", () => {
+    expect(parseIndiaDateTime("2026-10-12T18:00")?.toISOString()).toBe(
+      "2026-10-12T12:30:00.000Z"
+    );
+    expect(parseIndiaDateTime("2026-10-12T18:00:30")?.toISOString()).toBe(
+      "2026-10-12T12:30:30.000Z"
+    );
+  });
+
+  it("leaves values with a zone alone and rejects junk", () => {
+    expect(parseIndiaDateTime("2026-10-12T18:00:00.000Z")?.toISOString()).toBe(
+      "2026-10-12T18:00:00.000Z"
+    );
+    expect(parseIndiaDateTime("next tuesday")).toBeNull();
+    expect(parseIndiaDateTime("")).toBeNull();
   });
 });

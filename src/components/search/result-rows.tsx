@@ -5,9 +5,10 @@ import { CompanyMark } from "@/components/common/company-mark";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { JOB_TYPES, WORK_ARRANGEMENTS, companyProfilePath } from "@/lib/constants";
 import { OpportunityBadge } from "@/components/projects/opportunity-badge";
-import { formatCurrency } from "@/lib/utils";
+
 import type { BrowseProjectView, SearchResult } from "@/lib/types/domain";
 import { RoleBadge } from "@/components/profile/role-badge";
+import { listingTerms } from "@/lib/projects";
 
 /** Up to `limit` skills as compact mono tags, plus "+n". */
 export function SkillTags({
@@ -96,11 +97,13 @@ export function ProjectResultRow({
           ) : (
             <>
               <span className="tabular text-sm font-semibold text-emerald-700">
-                {formatCurrency(project.paymentAmount, project.currency)}
+                {listingTerms(project).price}
               </span>
               <span className="flex items-center gap-1 text-sm text-ink-600">
                 <Clock className="h-3.5 w-3.5 text-ink-400" aria-hidden />
-                {project.expectedHours}h
+                {project.freelance?.pricingModel === "hourly"
+                  ? `${project.freelance.hoursPerWeek}h/wk`
+                  : `${project.expectedHours}h`}
               </span>
             </>
           )}

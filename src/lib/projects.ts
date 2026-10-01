@@ -1,4 +1,6 @@
 import { BROWSABLE_PROJECT_STATUSES, OPEN_PROJECT_STATUSES } from "@/lib/constants";
+import { formatCurrency } from "@/lib/utils";
+import type { ProjectSummaryView } from "@/lib/types/domain";
 import type {
   JobType,
   OpportunityType,
@@ -200,4 +202,44 @@ export function filterProjects<
       .toLowerCase();
     return words.every((word) => haystack.includes(word));
   });
+}
+
+/**
+ * How a listing states its pay and effort in a one-line summary. A hire-only
+ * role is not paid work, so it never shows "₹0": it shows its compensation and
+ * flags the assessment as unpaid. A freelance contract shows its rate or total.
+ */
+export function listingTerms(
+  project: Pick<
+    ProjectSummaryView,
+    | "opportunityType"
+    | "paymentAmount"
+    | "currency"
+    | "expectedHours"
+    | "compensation"
+    | "assessmentTitle"
+    | "freelance"
+  >
+): { price: string; effort: string } {
+  if (project.opportunityType === "hire") {
+    return {
+      price: project.compensation || "Role",
+      effort: project.assessmentTitle
+        ? `Role · ~${project.expectedHours}h unpaid assessment`
+        : "Role",
+    };
+  }
+  const terms = project.freelance;
+  if (terms?.pricingModel === "hourly" && terms.hourlyRate !== null) {
+    return {
+      price: `${formatCurrency(terms.hourlyRate, project.currency)}/hr`,
+      effort: `Freelance · ${terms.hoursPerWeek}h a week for ${terms.durationWeeks} weeks`,
+    };
+  }
+  return {
+    price: formatCurrency(project.paymentAmount, project.currency),
+    effort: terms
+      ? `Freelance · fixed price · ~${project.expectedHours}h`
+      : `${project.expectedHours}h of work`,
+  };
 }

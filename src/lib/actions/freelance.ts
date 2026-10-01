@@ -15,6 +15,7 @@ import {
   submitMilestoneSchema,
 } from "@/lib/validations";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
+import { parseIndiaDateTime } from "@/lib/utils";
 import type { ActionResponse } from "@/lib/types/actions";
 
 const WEEK_MS = 7 * 86_400_000;
@@ -34,11 +35,10 @@ function toSlug(title: string): string {
   return `${base}-${Date.now().toString(36)}`;
 }
 
-/** A datetime-local value as ISO, or the raw text so validation reports it. */
+/** A datetime-local value (India time) as ISO, or the raw text so validation reports it. */
 function toIso(value: FormDataEntryValue | null): string {
   const raw = String(value || "");
-  const date = new Date(raw);
-  return Number.isNaN(date.valueOf()) ? raw : date.toISOString();
+  return parseIndiaDateTime(raw)?.toISOString() ?? raw;
 }
 
 /** The milestone rows of the form, skipping rows left completely empty. */

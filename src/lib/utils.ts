@@ -56,3 +56,18 @@ export function formatRelativeTime(dateString: string, now: Date = new Date()): 
   if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
   return formatDate(dateString);
 }
+
+/**
+ * A `<input type="datetime-local">` value as a moment in time. The browser
+ * sends it without a zone ("2026-10-12T18:00") and servers run in UTC, so it
+ * is read as India time — Trialent's users — rather than silently as UTC.
+ * Values that already carry a zone are left alone. Invalid input gives null.
+ */
+export function parseIndiaDateTime(value: string | null | undefined): Date | null {
+  if (!value) return null;
+  const local = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(value);
+  const date = new Date(
+    local ? `${value.length === 16 ? `${value}:00` : value}+05:30` : value
+  );
+  return Number.isNaN(date.valueOf()) ? null : date;
+}

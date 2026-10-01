@@ -24,8 +24,9 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { LinkTabs } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/common/page-header";
 import { EmptyState } from "@/components/common/empty-state";
-import { cn, formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
+import { cn, formatDate, formatRelativeTime } from "@/lib/utils";
 import type { CompanyProjectResult, CompanyProjectView } from "@/lib/types/domain";
+import { listingTerms } from "@/lib/projects";
 
 export type CompanyProjectsTab = "active" | "completed";
 
@@ -140,7 +141,7 @@ function ProjectRow({
             <span className="text-sm font-medium text-emerald-700">Free</span>
           ) : (
             <span className="tabular text-sm font-medium text-emerald-700">
-              {formatCurrency(project.paymentAmount, project.currency)}
+              {listingTerms(project).price}
             </span>
           )}
           <StatusBadge size="sm" tone={status.tone} label={status.label} />

@@ -32,7 +32,8 @@ import { ProfileStrengthCard } from "@/components/candidate/profile-strength-car
 import { UpdatesPanel } from "@/components/notifications/updates-panel";
 import { summarizeApplications } from "@/lib/applications";
 import { greetingFor, nextActionFor } from "@/lib/next-action";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
+import { listingTerms } from "@/lib/projects";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
@@ -188,32 +189,41 @@ export default async function CandidateDashboardPage({
               />
             ) : (
               <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
-                {openProjects.map((project) => (
-                  <li key={project.id}>
-                    <Link
-                      href={`/projects/${project.slug}`}
-                      className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-ink-50"
-                    >
-                      <CompanyMark name={project.companyName ?? "Startup"} />
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-ink-900">
-                          {project.title}
-                        </p>
-                        <p className="truncate text-xs text-ink-500">
-                          {project.companyName ?? "Startup"} · {project.expectedHours}h of
-                          work
-                        </p>
-                      </div>
-                      <span className="tabular shrink-0 text-sm font-medium text-emerald-700">
-                        {formatCurrency(project.paymentAmount, project.currency)}
-                      </span>
-                      <ArrowRight
-                        aria-hidden
-                        className="hidden h-4 w-4 text-ink-300 group-hover:text-ink-600 sm:block"
-                      />
-                    </Link>
-                  </li>
-                ))}
+                {openProjects.map((project) => {
+                  const terms = listingTerms(project);
+                  return (
+                    <li key={project.id}>
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-ink-50"
+                      >
+                        <CompanyMark name={project.companyName ?? "Startup"} />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-ink-900">
+                            {project.title}
+                          </p>
+                          <p className="truncate text-xs text-ink-500">
+                            {project.companyName ?? "Startup"} · {terms.effort}
+                          </p>
+                        </div>
+                        <span
+                          className={cn(
+                            "tabular shrink-0 text-sm font-medium",
+                            project.opportunityType === "hire"
+                              ? "text-ink-700"
+                              : "text-emerald-700"
+                          )}
+                        >
+                          {terms.price}
+                        </span>
+                        <ArrowRight
+                          aria-hidden
+                          className="hidden h-4 w-4 text-ink-300 group-hover:text-ink-600 sm:block"
+                        />
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </section>

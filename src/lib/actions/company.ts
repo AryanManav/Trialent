@@ -23,6 +23,7 @@ import {
   withdrawProjectSchema,
 } from "@/lib/validations";
 import { DEFAULT_CURRENCY, PROFILE_MEDIA_BUCKET } from "@/lib/constants";
+import { parseIndiaDateTime } from "@/lib/utils";
 import type { ActionResponse } from "@/lib/types/actions";
 
 /** Company forms post without JS, so errors surface via the query string. */
@@ -102,15 +103,14 @@ export async function createProjectAction(formData: FormData) {
   const user = await requireRole(["company", "admin"]);
   const createPath = "/company/projects/create";
 
-  const applicationDeadlineRaw = String(formData.get("applicationDeadline") || "");
-  const projectDeadlineRaw = String(formData.get("projectDeadline") || "");
-  const applicationDeadline = new Date(applicationDeadlineRaw);
-  const projectDeadline = new Date(projectDeadlineRaw);
+  const applicationDeadline = parseIndiaDateTime(
+    String(formData.get("applicationDeadline") || "")
+  );
+  const projectDeadline = parseIndiaDateTime(
+    String(formData.get("projectDeadline") || "")
+  );
 
-  if (
-    Number.isNaN(applicationDeadline.valueOf()) ||
-    Number.isNaN(projectDeadline.valueOf())
-  ) {
+  if (!applicationDeadline || !projectDeadline) {
     redirectWithError(
       createPath,
       "Please provide valid application and project deadlines"
@@ -213,12 +213,14 @@ export async function createHiringAction(formData: FormData) {
   const user = await requireRole(["company", "admin"]);
   const createPath = "/company/projects/create?type=hire";
 
-  const deadline = new Date(String(formData.get("applicationDeadline") || ""));
-  if (Number.isNaN(deadline.valueOf())) {
+  const deadline = parseIndiaDateTime(String(formData.get("applicationDeadline") || ""));
+  if (!deadline) {
     redirectWithError(createPath, "Please provide a valid application deadline");
   }
-  const assessmentDeadline = new Date(String(formData.get("assessmentDeadline") || ""));
-  if (Number.isNaN(assessmentDeadline.valueOf())) {
+  const assessmentDeadline = parseIndiaDateTime(
+    String(formData.get("assessmentDeadline") || "")
+  );
+  if (!assessmentDeadline) {
     redirectWithError(createPath, "Please provide a valid assessment deadline");
   }
 
